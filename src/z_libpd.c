@@ -17,12 +17,13 @@
 #ifndef LIBPD_NO_NUMERIC
 #include <locale.h>
 #endif
-#include "g_all_guis.h"
+#include "z_libpd.h"
 #include "m_imp.h"
+#include "g_all_guis.h"
 #include "s_stuff.h"
 #include "x_libpdreceive.h"
 #include "z_hooks.h"
-#include "z_libpd.h"
+
 
 #if PD_MINOR_VERSION < 46
 #define HAVE_SCHED_TICK_ARG

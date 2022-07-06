@@ -149,7 +149,7 @@ typedef struct _block
 } t_block;
 
 static void block_set(
-    t_block *x, t_floatarg fvecsize, t_floatarg foverlap, t_floatarg fupsample);
+    t_block *x, t_floatarg fcalcsize, t_floatarg foverlap, t_floatarg fupsample);
 
 static void *block_new(
     t_floatarg fvecsize, t_floatarg foverlap, t_floatarg fupsample)

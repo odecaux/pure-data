@@ -5,13 +5,13 @@
 /* modified 2/98 by Winfried Ritsch to deal with up to 4 synchronized
 "wave" devices, which is how ADAT boards appear to the WAVE API. */
 
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h"
-
 #include <mmsystem.h>
 #include <stdio.h>
 #include <windows.h>
+
+#include "m_pd.h"
+#include "s_stuff.h"
+#include "s_utf8.h"
 
 /* ------------------------- audio -------------------------- */
 

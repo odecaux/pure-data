@@ -16,7 +16,7 @@ to this file... */
 
 /* ---------------------- forward definitions ----------------- */
 
-static void graph_vis(t_gobj *gr, t_glist *unused_glist, int vis);
+static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis);
 static void graph_graphrect(
     t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2);
 static void graph_getrect(

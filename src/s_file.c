@@ -10,9 +10,6 @@
  * the registry, and in MacOS by the Preferences system.
  */
 
-#include "m_pd.h"
-#include "s_stuff.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +31,9 @@
 #ifdef __APPLE__ /* needed for plist handling */
 #include <CoreFoundation/CoreFoundation.h>
 #endif
+
+#include "m_pd.h"
+#include "s_stuff.h"
 
 void sys_doflags(void);
 

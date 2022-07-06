@@ -21,15 +21,15 @@
     switch to usleep in s_inter.c
 */
 
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h"
-
 #include <fcntl.h>
 #include <portaudio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "s_stuff.h"
+#include "s_utf8.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
