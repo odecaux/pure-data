@@ -37,9 +37,13 @@ static void tabwrite_tilde_redraw(t_tabwrite_tilde *x)
 {
     t_garray *a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class);
     if(!a)
+    {
         bug("tabwrite_tilde_redraw");
+    }
     else
+    {
         garray_redraw(a);
+    }
 }
 
 static t_int *tabwrite_tilde_perform(t_int *w)
@@ -234,9 +238,13 @@ static void tabplay_tilde_list(
     long length = atom_getfloatarg(1, argc, argv);
     if(start < 0) start = 0;
     if(length <= 0)
+    {
         x->x_limit = 0x7fffffff;
+    }
     else
+    {
         x->x_limit = (int) (start + length);
+    }
     x->x_phase = (int) start;
 }
 
@@ -304,9 +312,13 @@ static t_int *tabread_tilde_perform(t_int *w)
     {
         int index = *in++;
         if(index < 0)
+        {
             index = 0;
+        }
         else if(index > maxindex)
+        {
             index = maxindex;
+        }
         *out++ = buf[index].w_float;
     }
     return (w + 5);
@@ -429,11 +441,17 @@ static t_int *tabread4_tilde_perform(t_int *w)
         t_sample d;
         t_sample cminusb;
         if(index < 1)
+        {
             index = 1, frac = 0;
+        }
         else if(index > maxindex)
+        {
             index = maxindex, frac = 1;
+        }
         else
+        {
             frac = findex - index;
+        }
         wp = buf + index;
         a = wp[-1].w_float;
         b = wp[0].w_float;
@@ -724,9 +742,13 @@ static t_int *tabsend_perform(t_int *w)
     {
         t_garray *a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class);
         if(!a)
+        {
             bug("tabsend_dsp");
+        }
         else
+        {
             garray_redraw(a);
+        }
         i = x->x_graphperiod;
     }
     x->x_graphcount = i;
@@ -803,12 +825,16 @@ static t_int *tabreceive_perform(t_int *w)
             *out++ = (from++)->w_float;
         vecsize = n - x->x_npoints;
         if(vecsize > 0)
+        {
             while(vecsize--)
                 *out++ = 0;
+        }
     }
     else
+    {
         while(n--)
             *out++ = 0;
+    }
     return (w + 4);
 }
 
@@ -874,16 +900,24 @@ static void tabread_float(t_tabread *x, t_float f)
     t_word *vec;
 
     if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
+    }
     else if(!garray_getfloatwords(a, &npoints, &vec))
+    {
         pd_error(x, "%s: bad template for tabread", x->x_arrayname->s_name);
+    }
     else
     {
         int n = f;
         if(n < 0)
+        {
             n = 0;
+        }
         else if(n >= npoints)
+        {
             n = npoints - 1;
+        }
         outlet_float(x->x_obj.ob_outlet, (npoints ? vec[n].w_float : 0));
     }
 }
@@ -924,15 +958,25 @@ static void tabread4_float(t_tabread4 *x, t_float f)
     t_word *vec;
 
     if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
+    }
     else if(!garray_getfloatwords(a, &npoints, &vec))
+    {
         pd_error(x, "%s: bad template for tabread4", x->x_arrayname->s_name);
+    }
     else if(npoints < 4)
+    {
         outlet_float(x->x_obj.ob_outlet, 0);
+    }
     else if(f <= 1)
+    {
         outlet_float(x->x_obj.ob_outlet, vec[1].w_float);
+    }
     else if(f >= npoints - 2)
+    {
         outlet_float(x->x_obj.ob_outlet, vec[npoints - 2].w_float);
+    }
     else
     {
         int n = f;
@@ -998,16 +1042,24 @@ static void tabwrite_float(t_tabwrite *x, t_float f)
     t_word *vec;
 
     if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
+    }
     else if(!garray_getfloatwords(a, &vecsize, &vec))
+    {
         pd_error(x, "%s: bad template for tabwrite", x->x_arrayname->s_name);
+    }
     else
     {
         int n = x->x_ft1;
         if(n < 0)
+        {
             n = 0;
+        }
         else if(n >= vecsize)
+        {
             n = vecsize - 1;
+        }
         vec[n].w_float = f;
         garray_redraw(a);
     }

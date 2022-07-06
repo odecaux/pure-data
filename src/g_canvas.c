@@ -9,7 +9,6 @@ to be different but are now unified except for some fossilized names.) */
 #include <stdlib.h>
 #include <string.h>
 
-
 #include "m_pd.h"
 #include "m_imp.h"
 #include "g_canvas.h"
@@ -66,9 +65,13 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1, int *x2, int *y2)
 {
     if(x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
+    {
         (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
+    }
     else
+    {
         *x1 = *y1 = 0, *x2 = *y2 = 10;
+    }
 }
 
 void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
@@ -165,10 +168,14 @@ int gobj_click(t_gobj *x, struct _glist *glist, int xpix, int ypix, int shift,
     int alt, int dbl, int doit)
 {
     if(x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
+    {
         return ((*x->g_pd->c_wb->w_clickfn)(
             x, glist, xpix, ypix, shift, alt, dbl, doit));
+    }
     else
+    {
         return (0);
+    }
 }
 
 /* maintain the list of visible toplevels for the GUI's "windows" menu */
@@ -190,7 +197,9 @@ static void canvas_takeofflist(t_canvas *x)
 {
     /* take it off the window list */
     if(x == pd_this->pd_canvaslist)
+    {
         pd_this->pd_canvaslist = x->gl_next;
+    }
     else
     {
         t_canvas *z;
@@ -271,9 +280,13 @@ int canvas_getdollarzero(void)
     t_canvas *x = canvas_getcurrent();
     t_canvasenvironment *env = (x ? canvas_getenv(x) : 0);
     if(env)
+    {
         return (env->ce_dollarzero);
+    }
     else
+    {
         return (0);
+    }
 }
 
 void canvas_getargs(int *argcp, t_atom **argvp)
@@ -378,9 +391,13 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
             t_gobj *y;
             t_object *ob = 0;
             if(!t->tr_ob)
+            {
                 y = t->tr_x->gl_list;
+            }
             else
+            {
                 y = t->tr_ob->ob_g.g_next;
+            }
             for(; y; y = y->g_next)
                 if((ob = pd_checkobject(&y->g_pd))) break;
             if(!ob) return (0);
@@ -388,10 +405,14 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
             t->tr_nout = obj_noutlets(ob);
             outno = 0;
             if(glist_isvisible(t->tr_x))
+            {
                 gobj_getrect(
                     y, t->tr_x, &t->tr_x11, &t->tr_y11, &t->tr_x12, &t->tr_y12);
+            }
             else
+            {
                 t->tr_x11 = t->tr_y11 = t->tr_x12 = t->tr_y12 = 0;
+            }
         }
         t->tr_nextoutno = outno + 1;
         rval = obj_starttraverseoutlet(t->tr_ob, &t->tr_outlet, outno);
@@ -550,7 +571,9 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     x->gl_pixwidth = atom_getfloatarg(4, argc, argv);
     x->gl_pixheight = atom_getfloatarg(5, argc, argv);
     if(argc <= 7)
+    {
         canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 1);
+    }
     else
     {
         x->gl_xmargin = atom_getfloatarg(7, argc, argv);
@@ -597,8 +620,10 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym, t_float x1, t_float y1,
     }
     if(x1 == x2 || y1 == y2) x1 = 0, x2 = 100, y1 = 1, y2 = -1;
     if(px1 >= px2 || py1 >= py2)
+    {
         px1 = 100, py1 = 20, px2 = 100 + GLIST_DEFGRAPHWIDTH,
         py2 = 20 + GLIST_DEFGRAPHHEIGHT;
+    }
     x->gl_name = sym;
     x->gl_x1 = x1;
     x->gl_x2 = x2;
@@ -643,8 +668,10 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
     if(!canvas_undo_get(glist_getcanvas(g))->u_doing)
+    {
         canvas_undo_add(glist_getcanvas(g), UNDO_CREATE, "create",
             (void *) canvas_undo_set_create(glist_getcanvas(g)));
+    }
 }
 
 /* return true if the glist should appear as a graph on parent;
@@ -687,8 +714,10 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
         /* and move text objects accordingly; they should stick
         to the bottom, not the top. */
         for(y = x->gl_list; y; y = y->g_next)
+        {
             if(pd_checkobject(&y->g_pd))
                 gobj_displace(y, x, 0, heightchange / x->gl_zoom);
+        }
         canvas_redraw(x);
     }
 }
@@ -840,7 +869,9 @@ void glist_menu_open(t_glist *x)
     {
         t_glist *gl2 = x->gl_owner;
         if(!gl2)
+        {
             bug("glist_menu_open"); /* shouldn't happen but not dangerous */
+        }
         else
         {
             /* erase ourself in parent window */
@@ -932,12 +963,14 @@ static void canvas_drawlines(t_canvas *x)
     {
         linetraverser_start(&t, x);
         while((oc = linetraverser_next(&t)))
+        {
             sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list "
                      "l%lx cord]\n",
                 glist_getcanvas(x), t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
                 (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2 : 1) *
                     x->gl_zoom,
                 oc);
+        }
     }
 }
 
@@ -1033,9 +1066,13 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     canvas_pop(x, x->gl_willvis);
 
     if(!(z = gensym("#X")->s_thing))
+    {
         pd_error(0, "canvas_restore: out of context");
+    }
     else if(*z != canvas_class)
+    {
         pd_error(0, "canvas_restore: wasn't a canvas");
+    }
     else
     {
         t_canvas *x2 = (t_canvas *) z;
@@ -1049,17 +1086,23 @@ static void canvas_loadbangabstractions(t_canvas *x)
     t_gobj *y;
     t_symbol *s = gensym("loadbang");
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if(pd_class(&y->g_pd) == canvas_class)
         {
             if(canvas_isabstraction((t_canvas *) y))
+            {
                 canvas_loadbang((t_canvas *) y);
+            }
             else
+            {
                 canvas_loadbangabstractions((t_canvas *) y);
+            }
         }
         else if((pd_class(&y->g_pd) == clone_class) && zgetfn(&y->g_pd, s))
         {
             pd_vmess(&y->g_pd, s, "f", (t_floatarg) LB_LOAD);
         }
+    }
 }
 
 void canvas_loadbangsubpatches(t_canvas *x)
@@ -1067,17 +1110,21 @@ void canvas_loadbangsubpatches(t_canvas *x)
     t_gobj *y;
     t_symbol *s = gensym("loadbang");
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if(pd_class(&y->g_pd) == canvas_class)
         {
             if(!canvas_isabstraction((t_canvas *) y))
                 canvas_loadbangsubpatches((t_canvas *) y);
         }
+    }
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if((pd_class(&y->g_pd) != canvas_class) &&
             (pd_class(&y->g_pd) != clone_class) && zgetfn(&y->g_pd, s))
         {
             pd_vmess(&y->g_pd, s, "f", (t_floatarg) LB_LOAD);
         }
+    }
 }
 
 void canvas_loadbang(t_canvas *x)
@@ -1098,13 +1145,17 @@ void canvas_initbang(t_canvas *x)
     t_symbol *s = gensym("loadbang");
     /* run "initbang" for all subpatches, but NOT for the child abstractions */
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if(pd_class(&y->g_pd) == canvas_class &&
             !canvas_isabstraction((t_canvas *) y))
             canvas_initbang((t_canvas *) y);
+    }
     /* call the initbang()-method for objects that have one */
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))
             pd_vmess(&y->g_pd, s, "f", (t_floatarg) LB_INIT);
+    }
 }
 
 /* JMZ:
@@ -1121,8 +1172,10 @@ void canvas_closebang(t_canvas *x)
      * from g_graph:glist_delete()
      */
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))
             pd_vmess(&y->g_pd, s, "f", (t_floatarg) LB_CLOSE);
+    }
 }
 
 /* no longer used by 'pd-gui', but kept here for backwards compatibility.  The
@@ -1207,9 +1260,13 @@ static void *subcanvas_new(t_symbol *s)
                 if(outobj && pd_checkobject(&outobj->g_pd))
                 {
                     if(obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
+                    {
                         sob = gensym("inlet~");
+                    }
                     else
+                    {
                         sob = gensym("inlet");
+                    }
                 }
             }
         }
@@ -1252,7 +1309,9 @@ void canvas_fattensub(t_canvas *x, int *xp1, int *yp1, int *xp2, int *yp2)
 static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 {
     if(ac && av->a_type == A_SYMBOL)
+    {
         canvas_rename(x, av->a_w.w_symbol, 0);
+    }
     else if(ac && av->a_type == A_DOLLSYM)
     {
         t_canvasenvironment *e = canvas_getenv(x);
@@ -1281,18 +1340,26 @@ int canvas_showtext(const t_canvas *x)
     int isarray = (argc && argv[0].a_type == A_SYMBOL &&
                    argv[0].a_w.w_symbol == gensym("graph"));
     if(x->gl_hidetext)
+    {
         return 0;
+    }
     else
+    {
         return (!isarray);
+    }
 }
 
 /* get the document containing this canvas */
 t_canvas *canvas_getrootfor(t_canvas *x)
 {
     if((!x->gl_owner) || canvas_isabstraction(x))
+    {
         return (x);
+    }
     else
+    {
         return (canvas_getrootfor(x->gl_owner));
+    }
 }
 
 t_undo *canvas_undo_get(t_canvas *x)
@@ -1339,14 +1406,18 @@ void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
     /* find all the "dsp" boxes and add them to the graph */
 
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if((ob = pd_checkobject(&y->g_pd)) && zgetfn(&y->g_pd, dspsym))
             ugen_add(dc, ob);
+    }
 
     /* ... and all dsp interconnections */
     linetraverser_start(&t, x);
     while((oc = linetraverser_next(&t)))
+    {
         if(obj_issignaloutlet(t.tr_ob, t.tr_outno))
             ugen_connect(dc, t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
+    }
 
     /* finally, sort them and add them to the DSP chain */
     ugen_done_graph(dc);
@@ -1361,9 +1432,13 @@ static void canvas_start_dsp(void)
 {
     t_canvas *x;
     if(THISGUI->i_dspstate)
+    {
         ugen_stop();
+    }
     else
+    {
         sys_gui("pdtk_pd_dsp ON\n");
+    }
     ugen_start();
 
     for(x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1875,6 +1950,7 @@ int canvas_path_iterate(
     if(!fun) return 0;
     /* iterate through canvas-local paths */
     for(y = x; y; y = y->gl_owner)
+    {
         if(y->gl_env)
         {
             const char *dir;
@@ -1883,7 +1959,9 @@ int canvas_path_iterate(
             {
                 char realname[MAXPDSTRING];
                 if(sys_isabsolutepath(nl->nl_string))
+                {
                     realname[0] = '\0';
+                }
                 else
                 { /* if not absolute path, append Pd lib dir */
                     strncpy(realname, dir, MAXPDSTRING);
@@ -1897,6 +1975,7 @@ int canvas_path_iterate(
                 count++;
             }
         }
+    }
     /* try canvas dir */
     if(!fun((x ? canvas_getdir(x)->s_name : "."), user_data)) return count + 1;
     count++;
@@ -1915,11 +1994,13 @@ int canvas_path_iterate(
     }
     /* and the default paths */
     if(sys_usestdpath)
+    {
         for(nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
         {
             if(!fun(nl->nl_string, user_data)) return count + 1;
             count++;
         }
+    }
 
     return count;
 }
@@ -1956,9 +2037,13 @@ the glist classes, which all have 'glist' as the first item in struct */
 t_glist *pd_checkglist(t_pd *x)
 {
     if(*x == canvas_class || *x == array_define_class)
+    {
         return ((t_canvas *) x);
+    }
     else
+    {
         return (0);
+    }
 }
 
 /* ------------------------------- setup routine ------------------------ */
@@ -2184,12 +2269,16 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
 {
     t_glist *gl;
     if(f != 0)
+    {
         for(gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        {
             if(name == gl->gl_name && gl->gl_env && gl->gl_env->ce_dir == dir)
             {
                 /* don't reopen already-open document, just vis it */
                 canvas_vis(gl, 1);
                 return;
             }
+        }
+    }
     if(!glob_evalfile(ignore, name, dir)) sys_vgui("::pdwindow::busyrelease\n");
 }

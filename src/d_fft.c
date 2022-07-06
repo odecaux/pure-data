@@ -340,9 +340,13 @@ static t_int *sigframp_perform(t_int *w)
                 ((lastreal - nextreal) * re + (lastimag - nextimag) * im) /
                 (2.0f * pow);
             if(detune > 2 || detune < -2)
+            {
                 freq = pow = 0;
+            }
             else
+            {
                 freq = fbin + detune;
+            }
         }
         else
         {

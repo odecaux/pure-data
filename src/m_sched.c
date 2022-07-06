@@ -59,7 +59,9 @@ void clock_unset(t_clock *x)
     if(x->c_settime >= 0)
     {
         if(x == pd_this->pd_clock_setlist)
+        {
             pd_this->pd_clock_setlist = x->c_next;
+        }
         else
         {
             t_clock *x2 = pd_this->pd_clock_setlist;
@@ -129,9 +131,13 @@ void clock_setunit(t_clock *x, double timeunit, int sampflag)
                                        : (x->c_unit * (TIMEUNITPERSECOND /
                                                           STUFF->st_dacsr))));
     if(sampflag)
+    {
         x->c_unit = -timeunit; /* negate to flag sample-based */
+    }
     else
+    {
         x->c_unit = timeunit * TIMEUNITPERMSEC;
+    }
     if(timeleft >= 0) /* reschedule if already set */
         clock_delay(x, timeleft);
 }
@@ -158,11 +164,15 @@ double clock_gettimesincewithunits(
     units == 1 and (sys_time - prevsystime) is an integer number of
     DSP ticks, the result will be exact. */
     if(sampflag)
+    {
         return ((pd_this->pd_systime - prevsystime) /
                 ((TIMEUNITPERSECOND / STUFF->st_dacsr) * units));
+    }
     else
+    {
         return (
             (pd_this->pd_systime - prevsystime) / (TIMEUNITPERMSEC * units));
+    }
 }
 
 /* what value the system clock will have after a delay */
@@ -177,7 +187,9 @@ void clock_free(t_clock *x)
     freebytes(x, sizeof *x);
 }
 
-void glob_audiostatus(void) { /* rewrite me */ }
+void glob_audiostatus(void)
+{ /* rewrite me */
+}
 
 static int sched_diored;
 static int sched_dioredtime;
@@ -285,9 +297,6 @@ The time source is normally the audio I/O subsystem via the "sys_send_dacs()"
 call.  This call returns true if samples were transferred; false means that
 the audio I/O system is still busy with previous transfers.
 */
-
-
-
 
 /* sys_idlehook is a hook the user can fill in to grab idle time.  Return
 nonzero if you actually used the time; otherwise we're really really idle and
@@ -431,9 +440,13 @@ int m_mainloop(void)
     while(sys_quit != SYS_QUIT_QUIT)
     {
         if(sched_useaudio == SCHED_AUDIO_CALLBACK)
+        {
             m_callbackscheduler();
+        }
         else
+        {
             m_pollingscheduler();
+        }
         if(sys_quit == SYS_QUIT_RESTART)
         {
             sys_quit = 0;

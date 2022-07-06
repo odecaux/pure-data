@@ -410,8 +410,10 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *symbol)
     iemgui_verify_snd_ne_rcv(iemgui);
 
     if(glist_isvisible(iemgui->x_glist))
+    {
         (*iemgui->x_draw)(
             x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    }
 }
 
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *symbol)
@@ -444,8 +446,10 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *symbol)
     iemgui->x_fsf.x_rcv_able = rcvable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
+    {
         (*iemgui->x_draw)(
             x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    }
 }
 
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *symbol)
@@ -560,11 +564,15 @@ void iemgui_color(
 {
     if(argc >= 1) iemgui->x_bcol = iemgui_compatible_colorarg(0, argc, argv);
     if(argc == 2 && pd_compatibilitylevel < 47)
+    {
         /* old versions of Pd updated foreground and label color
         if only two args; now we do it more coherently. */
         iemgui->x_lcol = iemgui_compatible_colorarg(1, argc, argv);
+    }
     else if(argc >= 2)
+    {
         iemgui->x_fcol = iemgui_compatible_colorarg(1, argc, argv);
+    }
     if(argc >= 3) iemgui->x_lcol = iemgui_compatible_colorarg(2, argc, argv);
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);

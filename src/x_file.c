@@ -311,7 +311,9 @@ static void do_parse_args(t_file_handle *x, int argc, t_atom *argv)
     {
         const t_symbol *flag = atom_getsymbol(argv);
         if(0)
+        {
             ;
+        }
         else if(flag == flag_q)
         {
             x->x_verbose--;
@@ -389,8 +391,10 @@ static int do_file_open(t_file_handle *x, const char *filename, int mode)
         if(fd < 0)
         {
             if(x->x_verbose)
+            {
                 pd_error(
                     x, "unable to open '%s': %s", filename, strerror(errno));
+            }
             if(x->x_infoout) outlet_bang(x->x_infoout);
         }
     }
@@ -675,8 +679,10 @@ static void file_handle_open(t_file_handle *x, t_symbol *file, t_symbol *smode)
         {
             file_handle_close(x);
             if(x->x_verbose)
+            {
                 pd_error(x, "unable to stat '%s': %s", file->s_name,
                     strerror(errno));
+            }
             outlet_bang(x->x_infoout);
             return;
         }
@@ -684,8 +690,10 @@ static void file_handle_open(t_file_handle *x, t_symbol *file, t_symbol *smode)
         {
             file_handle_close(x);
             if(x->x_verbose)
+            {
                 pd_error(
                     x, "unable to open directory '%s' as file", file->s_name);
+            }
             outlet_bang(x->x_infoout);
             return;
         }
@@ -878,9 +886,13 @@ static void file_stat_symbol(t_file_handle *x, t_symbol *filename)
             break;
     }
     if(s)
+    {
         do_dataout_symbol(x, "type", s);
+    }
     else
+    {
         do_dataout_symbol(x, "type", gensym("unknown"));
+    }
 
     do_dataout_time(x, "atime", sb.st_atime);
     do_dataout_time(x, "mtime", sb.st_mtime);
@@ -1105,10 +1117,14 @@ static void file_glob_symbol(t_file_handle *x, t_symbol *spattern)
     onlydirs = ('/' == pattern[patternlen - 1]);
     if(!strcmp(".", pattern) || !strcmp("./", pattern) ||
         str_endswith(pattern, "/.") || str_endswith(pattern, "/./"))
+    {
         matchdot = 1;
+    }
     else if(!strcmp("..", pattern) || !strcmp("../", pattern) ||
             str_endswith(pattern, "/..") || str_endswith(pattern, "/../"))
+    {
         matchdot = 2;
+    }
     if(glob(pattern, flags, NULL, &gg))
     {
         // this gets triggered if there is no match...
@@ -1295,8 +1311,10 @@ static void file_delete_symbol(t_file_handle *x, t_symbol *path)
     {
         char buf[MAXPDSTRING];
         if(x && x->x_verbose)
+        {
             pd_error(x, "unable to delete '%s': %s", pathname,
                 do_errmsg(buf, MAXPDSTRING));
+        }
         outlet_bang(x->x_infoout);
     }
     else
@@ -1352,9 +1370,13 @@ static int file_do_copy(const char *source, const char *destination, int mode)
             char destfile[MAXPDSTRING];
             const char *filename = strrchr(source, '/');
             if(!filename)
+            {
                 filename = source;
+            }
             else
+            {
                 filename++;
+            }
             snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             dst = sys_open(destfile, O_WRONLY | O_CREAT | O_TRUNC, mode);
         }
@@ -1401,9 +1423,13 @@ static int file_do_move(const char *source, const char *destination, int mode)
             char destfile[MAXPDSTRING];
             const char *filename = strrchr(source, '/');
             if(!filename)
+            {
                 filename = source;
+            }
             else
+            {
                 filename++;
+            }
             snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             result = sys_rename(source, destfile);
             olderrno = errno;
@@ -1537,9 +1563,13 @@ static void file_split_symbol(t_file_handle *x, t_symbol *path)
         pathname = pathsep + 1;
     }
     if(*pathname)
+    {
         outlet_bang(x->x_infoout);
+    }
     else
+    {
         outlet_symbol(x->x_infoout, slashsym);
+    }
 
     outlet_list(x->x_dataout, gensym("list"), outc, outv);
 
@@ -1740,8 +1770,10 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom *argv)
         verb = s->s_name + 5;
     }
     if(!verb || !*verb)
+    {
         x = do_file_handle_new(
             file_handle_class, gensym("file handle"), argc, argv, 1, 0666);
+    }
     else
     {
 #define ELIF_FILE_PD_NEW(name, verbose, creationmode)                         \
@@ -1749,7 +1781,9 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom *argv)
         gensym("file " #name), argc, argv, verbose, creationmode)
 
         if(!strcmp(verb, "define"))
+        {
             x = file_define_new(gensym("file define"), argc, argv);
+        }
         else if(!strcmp(verb, "handle"))
             x = file_handle_new(gensym("file handle"), argc, argv);
         ELIF_FILE_PD_NEW(handle, 1, 0666);
@@ -1790,11 +1824,15 @@ static t_class *file_class_new(const char *name,
     t_class *cls = class_new(gensym(name), (t_newmethod) ctor, (t_method) dtor,
         sizeof(t_file_handle), 0, A_GIMME, 0);
     if(flag & VERBOSE)
+    {
         class_addmethod(
             cls, (t_method) file_set_verbosity, gensym("verbose"), A_FLOAT, 0);
+    }
     if(flag & MODE)
+    {
         class_addmethod(cls, (t_method) file_set_creationmode,
             gensym("creationmode"), A_GIMME, 0);
+    }
     if(symfun) class_addsymbol(cls, (t_method) symfun);
 
     class_sethelpsymbol(cls, gensym("file"));

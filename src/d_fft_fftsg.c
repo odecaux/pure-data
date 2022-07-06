@@ -34,8 +34,6 @@ for another, more permissive-sounding copyright notice.  -MSP
 void cdft(int, int, FFTFLT *, int *, FFTFLT *);
 void rdft(int, int, FFTFLT *, int *, FFTFLT *);
 
-
-
 static PERTHREAD int ooura_maxn;
 static PERTHREAD int *ooura_bitrev;
 static PERTHREAD int ooura_bitrevsize;
@@ -507,10 +505,9 @@ void cdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void rdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    
+
     void makect(int nc, int *ip, FFTFLT *c);
-    
-    
+
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int nw;
@@ -562,12 +559,7 @@ void rdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void ddct(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    
-    
-    
-    
-    
-    
+
     void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j;
     int nw;
@@ -631,12 +623,7 @@ void ddct(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void ddst(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    
-    
-    
-    
-    
-    
+
     void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j;
     int nw;
@@ -700,11 +687,7 @@ void ddst(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void dfct(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 {
-    
-    
-    
-    
-    
+
     int j;
     int k;
     int l;
@@ -814,11 +797,7 @@ void dfct(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 
 void dfst(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 {
-    
-    
-    
-    
-    
+
     int j;
     int k;
     int l;
@@ -1171,13 +1150,9 @@ void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w)
     void bitrv216neg(FFTFLT * a);
     void bitrv208neg(FFTFLT * a);
     void cftb1st(int n, FFTFLT *a, FFTFLT *w);
-    
-    
-    
-    
-    
+
     void cftb040(FFTFLT * a);
-    
+
 #ifdef USE_CDFT_THREADS
     void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w);
 #endif /* USE_CDFT_THREADS */
@@ -2678,7 +2653,7 @@ void *cftrec2_th(void *p)
 void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
     int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
-    
+
     void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
     int isplt;
     int j;
@@ -2703,7 +2678,7 @@ void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w)
 
 int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w)
 {
-    
+
     void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
     int i;
     int isplt;
@@ -2751,11 +2726,9 @@ int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w)
 
 void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w)
 {
-    
-    
-    
+
     void cftf162(FFTFLT * a, FFTFLT * w);
-    
+
     void cftf082(FFTFLT * a, FFTFLT * w);
 
     if(n == 512)
@@ -3083,10 +3056,6 @@ void cftmdl2(int n, FFTFLT *a, FFTFLT *w)
 
 void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
-    
-    
-    
-    
 
     if(n == 128)
     {

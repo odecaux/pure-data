@@ -114,10 +114,14 @@ t_float q8_rsqrt(t_float f0)
     init_rsqrt();
     u.f = f0;
     if(u.f < 0)
+    {
         return (0);
+    }
     else
+    {
         return (t_float) (rsqrt_exptab[(u.l >> 23) & 0xff] *
                           rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
+    }
 }
 
 t_float q8_sqrt(t_float f0)
@@ -131,10 +135,14 @@ t_float q8_sqrt(t_float f0)
     init_rsqrt();
     u.f = f0;
     if(u.f < 0)
+    {
         return (0);
+    }
     else
+    {
         return (t_float) (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
                           rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
+    }
 }
 
 t_float qsqrt(t_float f) { return (q8_sqrt(f)); }
@@ -175,7 +183,9 @@ static t_int *sigrsqrt_perform(t_int *w)
 
         u.f = f;
         if(f < 0)
+        {
             *out++ = 0;
+        }
         else
         {
             t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
@@ -239,7 +249,9 @@ t_int *sigsqrt_perform(t_int *w) /* not static; also used in d_fft.c */
 
         u.f = f;
         if(f < 0)
+        {
             *out++ = 0;
+        }
         else
         {
             t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
@@ -295,9 +307,13 @@ static t_int *sigwrap_perform(t_int *w)
         f = (f > INT_MAX || f < INT_MIN) ? 0. : f;
         k = (int) f;
         if(k <= f)
+        {
             *out++ = f - k;
+        }
         else
+        {
             *out++ = f - (k - 1);
+        }
     }
     return (w + 4);
 }
@@ -313,9 +329,13 @@ static t_int *sigwrap_old_perform(t_int *w)
         t_sample f = *in++;
         int k = f;
         if(f > 0)
+        {
             *out++ = f - k;
+        }
         else
+        {
             *out++ = f - (k - 1);
+        }
     }
     return (w + 4);
 }
@@ -363,7 +383,9 @@ static t_int *mtof_tilde_perform(t_int *w)
     {
         t_sample f = *in;
         if(f <= -1500)
+        {
             *out = 0;
+        }
         else
         {
             if(f > 1499) f = 1499;
@@ -461,7 +483,9 @@ static t_int *dbtorms_tilde_perform(t_int *w)
     {
         t_sample f = *in;
         if(f <= 0)
+        {
             *out = 0;
+        }
         else
         {
             if(f > 485) f = 485;
@@ -513,7 +537,9 @@ static t_int *rmstodb_tilde_perform(t_int *w)
     {
         t_sample f = *in;
         if(f <= 0)
+        {
             *out = 0;
+        }
         else
         {
             t_sample g = 100 + 20. / LOGTEN * log(f);
@@ -565,7 +591,9 @@ static t_int *dbtopow_tilde_perform(t_int *w)
     {
         t_sample f = *in;
         if(f <= 0)
+        {
             *out = 0;
+        }
         else
         {
             if(f > 870) f = 870;
@@ -617,7 +645,9 @@ static t_int *powtodb_tilde_perform(t_int *w)
     {
         t_sample f = *in;
         if(f <= 0)
+        {
             *out = 0;
+        }
         else
         {
             t_sample g = 100 + 10. / LOGTEN * log(f);
@@ -765,11 +795,17 @@ t_int *log_tilde_perform(t_int *w)
         t_sample f = *in1++;
         t_sample g = *in2++;
         if(f <= 0)
+        {
             *out = -1000; /* rather than blow up, output a number << 0 */
+        }
         else if(g <= 0)
+        {
             *out = log(f);
+        }
         else
+        {
             *out = log(f) / log(g);
+        }
         out++;
     }
     return (w + 5);

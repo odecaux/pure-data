@@ -46,11 +46,15 @@ static void dac_dsp(t_dac *x, t_signal **sp)
     {
         int ch = (int) (x->x_vec[i] - 1);
         if(sp[i]->s_n != DEFDACBLKSIZE)
+        {
             pd_error(0, "dac~: bad vector size");
+        }
         else if(ch >= 0 && ch < sys_get_outchannels())
+        {
             dsp_add(plus_perform, 4, STUFF->st_soundout + DEFDACBLKSIZE * ch,
                 sp[i]->s_vec, STUFF->st_soundout + DEFDACBLKSIZE * ch,
                 (t_int) DEFDACBLKSIZE);
+        }
     }
 }
 
@@ -112,12 +116,18 @@ static void adc_dsp(t_adc *x, t_signal **sp)
     {
         int ch = (int) (x->x_vec[i] - 1);
         if(sp[i]->s_n != DEFDACBLKSIZE)
+        {
             pd_error(0, "adc~: bad vector size");
+        }
         else if(ch >= 0 && ch < sys_get_inchannels())
+        {
             dsp_add_copy(STUFF->st_soundin + DEFDACBLKSIZE * ch, sp[i]->s_vec,
                 DEFDACBLKSIZE);
+        }
         else
+        {
             dsp_add_zero(sp[i]->s_vec, DEFDACBLKSIZE);
+        }
     }
 }
 

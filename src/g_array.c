@@ -79,8 +79,6 @@ void array_resize_and_redraw(t_array *array, t_glist *glist, int new_size)
     if(is_visible) gobj_vis(&a2->a_gp.gp_un.gp_scalar->sc_gobj, glist, 1);
 }
 
-
-
 void array_free(t_array *x)
 {
     t_template *scalartemplate = template_findbyname(x->a_templatesym);
@@ -437,7 +435,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             pd_bind(&x->x_gobj.g_pd, x->x_realname);
             /* redraw the whole glist, just so the name change shows up */
             if(x->x_glist->gl_havewindow)
+            {
                 canvas_redraw(x->x_glist);
+            }
             else if(glist_isvisible(x->x_glist->gl_owner))
             {
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
@@ -448,9 +448,13 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         long size = fsize;
         if(size < 1) size = 1;
         if(size != a->a_n)
+        {
             garray_resize_long(x, size);
+        }
         else if(style != stylewas)
+        {
             garray_fittograph(x, (int) size, style);
+        }
         template_setfloat(scalartemplate, gensym("style"), x->x_scalar->sc_vec,
             (t_float) style, 0);
         template_setfloat(scalartemplate, gensym("linewidth"),
@@ -564,13 +568,21 @@ void array_getcoordinate(t_glist *glist, char *elem, int xonset, int yonset,
     t_float ypix;
     t_float wpix;
     if(xonset >= 0)
+    {
         xval = *(t_float *) (elem + xonset);
+    }
     else
+    {
         xval = indx * xinc;
+    }
     if(yonset >= 0)
+    {
         yval = *(t_float *) (elem + yonset);
+    }
     else
+    {
         yval = 0;
+    }
     ypix =
         glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, yval));
     if(wonset >= 0)
@@ -612,9 +624,13 @@ static void array_getrect(
         int incr;
         /* if it has more than 2000 points, just check 300 of them. */
         if(array->a_n < 2000)
+        {
             incr = 1;
+        }
         else
+        {
             incr = array->a_n / 300;
+        }
         for(i = 0; i < array->a_n; i += incr)
         {
             t_float pxpix;
@@ -658,7 +674,9 @@ static void garray_select(t_gobj *z, t_glist *glist, int state)
 
 static void garray_activate(t_gobj *z, t_glist *glist, int state) {}
 
-static void garray_delete(t_gobj *z, t_glist *glist) { /* nothing to do */ }
+static void garray_delete(t_gobj *z, t_glist *glist)
+{ /* nothing to do */
+}
 
 static void garray_vis(t_gobj *z, t_glist *glist, int vis)
 {
@@ -671,10 +689,14 @@ static int garray_click(t_gobj *z, t_glist *glist, int xpix, int ypix,
 {
     t_garray *x = (t_garray *) z;
     if(x->x_edit)
+    {
         return (gobj_click(
             &x->x_scalar->sc_gobj, glist, xpix, ypix, shift, alt, dbl, doit));
+    }
     else
+    {
         return (0);
+    }
 }
 
 #define ARRAYWRITECHUNKSIZE 1000
@@ -697,8 +719,10 @@ void garray_savecontentsto(t_garray *x, t_binbuf *b)
             if(chunk > ARRAYWRITECHUNKSIZE) chunk = ARRAYWRITECHUNKSIZE;
             binbuf_addv(b, "si", gensym("#A"), n2);
             for(i = 0; i < chunk; i++)
+            {
                 binbuf_addv(
                     b, "f", ((t_word *) (array->a_vec))[n2 + i].w_float);
+            }
             binbuf_addv(b, ";");
             n2 += chunk;
         }
@@ -761,15 +785,19 @@ static void garray_doredraw(t_gobj *client, t_glist *glist)
 void garray_redraw(t_garray *x)
 {
     if(glist_isvisible(x->x_glist))
+    {
         sys_queuegui(&x->x_gobj, x->x_glist, garray_doredraw);
-    /* jsarlo { */
-    /* this happens in garray_vis() when array is visible for
-       performance reasons */
+        /* jsarlo { */
+        /* this happens in garray_vis() when array is visible for
+           performance reasons */
+    }
     else
     {
         if(x->x_listviewing)
+        {
             sys_vgui(
                 "pdtk_array_listview_fillpage {%s}\n", x->x_realname->s_name);
+        }
     }
     /* } jsarlo */
 }
@@ -830,9 +858,13 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
     {
         t_symbol *patchname;
         if(x->x_glist->gl_owner)
+        {
             patchname = x->x_glist->gl_owner->gl_name;
+        }
         else
+        {
             patchname = x->x_glist->gl_name;
+        }
         pd_error(0, "an operation on the array '%s' in the patch '%s'",
             x->x_name->s_name, patchname->s_name);
         pd_error(0,
@@ -845,8 +877,10 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
 void garray_setsaveit(t_garray *x, int saveit)
 {
     if(x->x_saveit && !saveit)
+    {
         post("warning: array %s: clearing save-in-patch flag",
             x->x_name->s_name);
+    }
     x->x_saveit = saveit;
 }
 
@@ -858,11 +892,15 @@ static void garray_const(t_garray *x, t_floatarg g)
     int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
+    {
         pd_error(
             0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
+    }
     else
+    {
         for(i = 0; i < array->a_n; i++)
             *((t_float *) ((char *) array->a_vec + elemsize * i) + yonset) = g;
+    }
     garray_redraw(x);
 }
 
@@ -886,19 +924,25 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval, int nsin,
     }
     if(npoints == 0) npoints = 512; /* dunno what a good default would be... */
     if(npoints != (1 << ilog2((int) npoints)))
+    {
         post("%s: rounding to %d points", array->a_templatesym->s_name,
             (npoints = (1 << ilog2((int) npoints))));
+    }
     garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;
     for(i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
     {
         double sum = dcval;
         if(sineflag)
+        {
             for(j = 0, fj = phase; j < nsin; j++, fj += phase)
                 sum += vsin[j] * sin(fj);
+        }
         else
+        {
             for(j = 0, fj = 0; j < nsin; j++, fj += phase)
                 sum += vsin[j] * cos(fj);
+        }
         *((t_float *) ((array->a_vec + elemsize * i)) + yonset) = sum;
     }
     garray_redraw(x);
@@ -999,7 +1043,9 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     if(argc < 2)
+    {
         return;
+    }
     else
     {
         int firstindex = atom_getfloat(argv);
@@ -1019,8 +1065,10 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
             if(argc <= 0) return;
         }
         for(i = 0; i < argc; i++)
+        {
             *((t_float *) (array->a_vec + elemsize * (i + firstindex)) +
                 yonset) = atom_getfloat(argv + i);
+        }
     }
     garray_redraw(x);
 }

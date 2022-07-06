@@ -193,9 +193,13 @@ static void line_tilde_stop(t_line *x)
 static void line_tilde_dsp(t_line *x, t_signal **sp)
 {
     if(sp[0]->s_n & 7)
+    {
         dsp_add(line_tilde_perform, 3, x, sp[0]->s_vec, (t_int) sp[0]->s_n);
+    }
     else
+    {
         dsp_add(line_tilde_perf8, 3, x, sp[0]->s_vec, (t_int) sp[0]->s_n);
+    }
     x->x_1overn = 1. / sp[0]->s_n;
     x->x_dspticktomsec = sp[0]->s_sr / (1000 * sp[0]->s_n);
 }
@@ -556,9 +560,13 @@ static void vsnapshot_tilde_bang(t_vsnapshot *x)
     {
         int indx = clock_gettimesince(x->x_time) * x->x_sampspermsec;
         if(indx < 0)
+        {
             indx = 0;
+        }
         else if(indx >= x->x_n)
+        {
             indx = x->x_n - 1;
+        }
         val = x->x_vec[indx];
     }
     else
@@ -690,9 +698,13 @@ static void env_tilde_dsp(t_sigenv *x, t_signal **sp)
 {
 
     if(x->x_period % sp[0]->s_n)
+    {
         x->x_realperiod = x->x_period + sp[0]->s_n - (x->x_period % sp[0]->s_n);
+    }
     else
+    {
         x->x_realperiod = x->x_period;
+    }
 
     if(sp[0]->s_n > x->x_allocforvs)
     {
@@ -793,9 +805,13 @@ static void threshold_tilde_ft1(t_threshold_tilde *x, t_floatarg f)
 static void threshold_tilde_tick(t_threshold_tilde *x)
 {
     if(x->x_state)
+    {
         outlet_bang(x->x_outlet1);
+    }
     else
+    {
         outlet_bang(x->x_outlet2);
+    }
 }
 
 static t_int *threshold_tilde_perform(t_int *w)

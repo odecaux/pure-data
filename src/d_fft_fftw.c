@@ -10,8 +10,6 @@
 
 #include <fftw3.h>
 
-
-
 #define MINFFT 0
 #define MAXFFT 30
 

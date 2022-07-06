@@ -89,13 +89,17 @@ void sys_setchsr(int chin, int chout, int sr)
     int outbytes = (chout ? chout : 2) * (DEFDACBLKSIZE * sizeof(t_sample));
 
     if(STUFF->st_soundin)
+    {
         freebytes(STUFF->st_soundin,
             (STUFF->st_inchannels ? STUFF->st_inchannels : 2) *
                 (DEFDACBLKSIZE * sizeof(t_sample)));
+    }
     if(STUFF->st_soundout)
+    {
         freebytes(STUFF->st_soundout,
             (STUFF->st_outchannels ? STUFF->st_outchannels : 2) *
                 (DEFDACBLKSIZE * sizeof(t_sample)));
+    }
     STUFF->st_inchannels = chin;
     STUFF->st_outchannels = chout;
     if(!audio_isfixedsr(sys_audioapiopened)) STUFF->st_dacsr = sr;
@@ -149,9 +153,13 @@ static void audio_make_sane(
             for(i = *ndev; i < *nchan; i++)
             {
                 if(i == 0)
+                {
                     devvec[0] = DEFAULTAUDIODEV;
+                }
                 else
+                {
                     devvec[i] = devvec[i - 1] + 1;
+                }
             }
             *ndev = *nchan;
         }
@@ -160,9 +168,13 @@ static void audio_make_sane(
             for(i = *nchan; i < *ndev; i++)
             {
                 if(i == 0)
+                {
                     chanvec[0] = SYS_DEFAULTCH;
+                }
                 else
+                {
                     chanvec[i] = chanvec[i - 1];
+                }
             }
             *ndev = *nchan;
         }
@@ -184,6 +196,7 @@ static void audio_compact_and_count_channels(
     int newndev;
     /* count total number of input and output channels */
     for(i = newndev = *totalchans = 0; i < *ndev; i++)
+    {
         if(chanvec[i] > 0)
         {
             chanvec[newndev] = chanvec[i];
@@ -191,6 +204,7 @@ static void audio_compact_and_count_channels(
             *totalchans += chanvec[i];
             newndev++;
         }
+    }
     *ndev = newndev;
 }
 
@@ -306,10 +320,15 @@ void sys_close_audio(void)
 #endif
 #ifdef USEAPI_DUMMY
         if(sys_audioapiopened == API_DUMMY)
+    {
         dummy_close_audio();
+    }
     else
+    {
 #endif
         post("sys_close_audio: unknown API %d", sys_audioapiopened);
+    }
+
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_callback_is_open = 0;
@@ -420,13 +439,19 @@ void sys_reopen_audio(void)
 #endif
 #ifdef USEAPI_DUMMY
         if(as.a_api == API_DUMMY)
+    {
         outcome = dummy_open_audio(as.a_nindev, as.a_noutdev, as.a_srate);
+    }
     else
 #endif
         if(as.a_api == API_NONE)
+    {
         ;
+    }
     else
+    {
         post("unknown audio API specified");
+    }
     if(outcome) /* failed */
     {
         sys_audioapiopened = API_NONE;
@@ -482,10 +507,15 @@ int sys_send_dacs(void)
 #endif
 #ifdef USEAPI_DUMMY
         if(sys_audioapiopened == API_DUMMY)
+    {
         return (dummy_send_dacs());
+    }
     else
+    {
 #endif
         post("unknown API");
+    }
+
     return (0);
 }
 
@@ -602,15 +632,19 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 
     sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for(i = 0; i < nindevs; i++)
+    {
         sys_vgui("lappend audio_indevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
     for(i = 0; i < noutdevs; i++)
+    {
         sys_vgui("lappend audio_outdevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_get_audio_settings(&as);
 
@@ -682,9 +716,13 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if(!audio_callback_is_open && !as.a_callback) sys_close_audio();
     sys_set_audio_settings(&as);
     if(!audio_callback_is_open && !as.a_callback)
+    {
         sys_reopen_audio();
+    }
     else
+    {
         sched_reopenmeplease();
+    }
 }
 
 void sys_listdevs(void)
@@ -700,7 +738,9 @@ void sys_listdevs(void)
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
     if(!nindevs)
+    {
         post("no audio input devices found");
+    }
     else
     {
         /* To agree with command line flags, normally start at 1 */
@@ -709,17 +749,23 @@ void sys_listdevs(void)
 
         post("audio input devices:");
         for(i = 0; i < nindevs; i++)
+        {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 indevlist + i * DEVDESCSIZE);
+        }
     }
     if(!noutdevs)
+    {
         post("no audio output devices found");
+    }
     else
     {
         post("audio output devices:");
         for(i = 0; i < noutdevs; i++)
+        {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 outdevlist + i * DEVDESCSIZE);
+        }
     }
     post("API number %d\n", audio_nextsettings.a_api);
     sys_listmididevs();
@@ -817,13 +863,17 @@ void sys_get_audio_apis(char *buf)
 {
     unsigned int n;
     if(sizeof(audio_apilist) / sizeof(t_apientry) < 2)
+    {
         strcpy(buf, "{}");
+    }
     else
     {
         strcpy(buf, "{ ");
         for(n = 0; n < sizeof(audio_apilist) / sizeof(t_apientry); n++)
+        {
             sprintf(buf + strlen(buf), "{%s %d} ", audio_apilist[n].a_name,
                 audio_apilist[n].a_id);
+        }
         strcat(buf, "}");
     }
 }
@@ -893,10 +943,16 @@ void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
     if(output && (devno < noutdevs))
+    {
         strncpy(name, outdevlist + devno * DEVDESCSIZE, namesize);
+    }
     else if(!output && (devno < nindevs))
+    {
         strncpy(name, indevlist + devno * DEVDESCSIZE, namesize);
+    }
     else
+    {
         *name = 0;
+    }
     name[namesize - 1] = 0;
 }

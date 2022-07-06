@@ -307,8 +307,10 @@ static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
     int first;
     int nchar;
     if(slash)
+    {
         while(*ip < argc && argv[*ip].a_w.w_float == '/')
             (*ip)++;
+    }
     for(nchar = 0; nchar < MAXPDSTRING - 1 && *ip < argc; nchar++, (*ip)++)
     {
         char c = argv[*ip].a_w.w_float;
@@ -335,11 +337,13 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *outv;
     if(!argc) return;
     for(i = 0; i < argc; i++)
+    {
         if(argv[i].a_type != A_FLOAT)
         {
             pd_error(x, "oscparse: takes numbers only");
             return;
         }
+    }
     if(argv[0].a_w.w_float == '#') /* it's a bundle */
     {
         if(argv[1].a_w.w_float != 'b' || argc < 16)
@@ -383,9 +387,13 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
         if(argv[i].a_w.w_float == 'b') blob = 1;
     nfield = i - typeonset;
     if(blob)
+    {
         outc += argc - typeonset;
+    }
     else
+    {
         outc += nfield;
+    }
     outv = (t_atom *) alloca(outc * sizeof(t_atom));
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
@@ -569,16 +577,24 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
     for(j = ndata = 0, sp = formatp, msgindex = 0; j < argc;)
     {
         if(*sp)
+        {
             typecode = *sp++;
+        }
         else if(argv[j].a_type == A_SYMBOL)
+        {
             typecode = 's';
+        }
         else
+        {
             typecode = 'f';
+        }
         if(typecode == 's')
         {
             if(argv[j].a_type == A_SYMBOL)
+            {
                 msgindex +=
                     ROUNDUPTO4(strlen(argv[j].a_w.w_symbol->s_name) + 1);
+            }
             else
             {
                 pd_error(
@@ -614,11 +630,17 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
     for(j = 0, sp = formatp, msgindex = datastart; j < argc;)
     {
         if(*sp)
+        {
             typecode = *sp++;
+        }
         else if(argv[j].a_type == A_SYMBOL)
+        {
             typecode = 's';
+        }
         else
+        {
             typecode = 'f';
+        }
         SETFLOAT(&msg[typeindex], typecode & 0xff);
         typeindex++;
         if(typecode == 'f')
@@ -640,7 +662,9 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
             msgindex += 4;
         }
         else if(typecode == 's')
+        {
             putstring(msg, &msgindex, argv[j].a_w.w_symbol->s_name);
+        }
         else if(typecode == 'b')
         {
             int blobsize = 0x7fffffff;
@@ -651,6 +675,7 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
             WRITEINT(msg + msgindex, blobsize);
             msgindex += 4;
             for(blobindex = 0; blobindex < blobsize; blobindex++)
+            {
                 SETFLOAT(msg + msgindex + blobindex,
                     (argv[j + 1 + blobindex].a_type == A_FLOAT
                             ? argv[j + 1 + blobindex].a_w.w_float
@@ -659,6 +684,7 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
                                                 .a_w.w_symbol->s_name[0] &
                                             0xff
                                       : 0)));
+            }
             j += blobsize;
             while(blobsize & 3)
                 SETFLOAT(msg + msgindex + blobsize, 0), blobsize++;
@@ -671,8 +697,10 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
     while(typeindex & 3)
         SETFLOAT(&msg[typeindex], 0), typeindex++;
     if(typeindex != datastart || msgindex != msgsize)
+    {
         bug("oscformat: typeindex %d, datastart %d, msgindex %d, msgsize %d",
             typeindex, datastart, msgindex, msgsize);
+    }
     /* else post("datastart %d, msgsize %d", datastart, msgsize); */
     outlet_list(x->x_obj.ob_outlet, 0, msgsize, msg);
 }
@@ -744,18 +772,24 @@ static void fudiparse_binbufout(t_fudiparse *x, t_binbuf *b)
             int i;
             /* check for illegal atoms */
             for(i = msg; i < emsg; i++)
+            {
                 if(at[i].a_type == A_DOLLAR || at[i].a_type == A_DOLLSYM)
                 {
                     pd_error(x, "fudiparse: got dollar sign in message");
                     goto nodice;
                 }
+            }
 
             if(at[msg].a_type == A_FLOAT)
             {
                 if(emsg > msg + 1)
+                {
                     outlet_list(x->x_msgout, 0, emsg - msg, at + msg);
+                }
                 else
+                {
                     outlet_float(x->x_msgout, at[msg].a_w.w_float);
+                }
             }
             else if(at[msg].a_type == A_SYMBOL)
             {
@@ -880,9 +914,13 @@ static void *fudiformat_new(t_symbol *s)
     x->x_numatoms = 1024;
     x->x_atoms = getbytes(sizeof(*x->x_atoms) * x->x_numatoms);
     if(gensym("-u") == s)
+    {
         x->x_udp = 1;
+    }
     else if(gensym("-t") == s)
+    {
         x->x_udp = 0;
+    }
     else if(gensym("") != s)
     {
         pd_error(x, "fudiformat: unsupported mode '%s'", s->s_name);

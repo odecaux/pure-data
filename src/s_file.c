@@ -485,11 +485,17 @@ static void sys_initloadpreferences(void)
     snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
         (homedir ? homedir : "."));
     if(stat(user_prefs_file, &statbuf) == 0)
+    {
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
+    }
     else if(stat(default_prefs_file, &statbuf) == 0)
+    {
         strncpy(filenamebuf, default_prefs_file, MAXPDSTRING);
+    }
     else
+    {
         return;
+    }
     filenamebuf[MAXPDSTRING - 1] = 0;
     sys_initloadpreferences_file(filenamebuf);
 }
@@ -538,9 +544,13 @@ void sys_loadpreferences(const char *filename, int startingup)
     sys_get_audio_settings(&as);
 
     if(*filename)
+    {
         sys_initloadpreferences_file(filename);
+    }
     else
+    {
         sys_initloadpreferences();
+    }
     /* load audio preferences */
     if(!sys_externalschedlib &&
         sys_getpreference("audioapi", prefbuf, MAXPDSTRING) &&
@@ -549,7 +559,9 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("noaudioin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         as.a_nindev = 0;
+    }
     else
     {
         for(as.a_nindev = 0; as.a_nindev < MAXAUDIOINDEV; as.a_nindev++)
@@ -577,7 +589,9 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("noaudioout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         as.a_noutdev = 0;
+    }
     else
     {
         for(as.a_noutdev = 0; as.a_noutdev < MAXAUDIOOUTDEV; as.a_noutdev++)
@@ -603,10 +617,14 @@ void sys_loadpreferences(const char *filename, int startingup)
     if(sys_getpreference("callback", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &as.a_callback);
     if(sys_getpreference("audioblocksize", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &as.a_blocksize);
 #ifndef _WIN32
+    }
     else if(sys_getpreference("blocksize", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &as.a_blocksize);
+    }
 #endif
     sys_set_audio_settings(&as);
 
@@ -617,8 +635,11 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("nomidiin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         nmidiindev = 0;
+    }
     else
+    {
         for(nmidiindev = 0; nmidiindev < MAXMIDIINDEV; nmidiindev++)
         {
             /* first try to find a name - if that matches an existing device
@@ -627,7 +648,9 @@ void sys_loadpreferences(const char *filename, int startingup)
             sprintf(keybuf, "midiindevname%d", nmidiindev + 1);
             if(sys_getpreference(keybuf, prefbuf, MAXPDSTRING) &&
                 (devn = sys_mididevnametonumber(0, prefbuf)) >= 0)
+            {
                 midiindev[nmidiindev] = devn;
+            }
             else
             {
                 sprintf(keybuf, "midiindev%d", nmidiindev + 1);
@@ -635,18 +658,24 @@ void sys_loadpreferences(const char *filename, int startingup)
                 if(sscanf(prefbuf, "%d", &midiindev[nmidiindev]) < 1) break;
             }
         }
+    }
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("nomidiout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         nmidioutdev = 0;
+    }
     else
+    {
         for(nmidioutdev = 0; nmidioutdev < MAXMIDIOUTDEV; nmidioutdev++)
         {
             int devn;
             sprintf(keybuf, "midioutdevname%d", nmidioutdev + 1);
             if(sys_getpreference(keybuf, prefbuf, MAXPDSTRING) &&
                 (devn = sys_mididevnametonumber(1, prefbuf)) >= 0)
+            {
                 midioutdev[nmidioutdev] = devn;
+            }
             else
             {
                 sprintf(keybuf, "midioutdev%d", nmidioutdev + 1);
@@ -654,13 +683,18 @@ void sys_loadpreferences(const char *filename, int startingup)
                 if(sscanf(prefbuf, "%d", &midioutdev[nmidioutdev]) < 1) break;
             }
         }
+    }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 
     /* search path */
     if(sys_getpreference("npath", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &maxi);
+    }
     else
+    {
         maxi = 0x7fffffff;
+    }
     for(i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "path%d", i + 1);
@@ -675,9 +709,13 @@ void sys_loadpreferences(const char *filename, int startingup)
 
     /* startup settings */
     if(sys_getpreference("nloadlib", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &maxi);
+    }
     else
+    {
         maxi = 0x7fffffff;
+    }
     for(i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "loadlib%d", i + 1);
@@ -693,230 +731,240 @@ void sys_loadpreferences(const char *filename, int startingup)
         if(startingup) sys_doflags();
     }
     if(sys_defeatrt)
+    {
         sys_hipriority = 0;
+    }
     else
+    {
 #if defined(ANDROID)
         sys_hipriority = 0;
 #else
-        sys_hipriority = 1;
+            sys_hipriority = 1;
+        }
 #endif
-    if(sys_getpreference("zoom", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &sys_zoom_open);
+        if(sys_getpreference("zoom", prefbuf, MAXPDSTRING))
+            sscanf(prefbuf, "%d", &sys_zoom_open);
 
-    sys_doneloadpreferences();
-}
-
-void sys_savepreferences(const char *filename)
-{
-    t_audiosettings as;
-    int i;
-    char buf1[MAXPDSTRING];
-    char buf2[MAXPDSTRING];
-    int nmidiindev;
-    int midiindev[MAXMIDIINDEV];
-    int nmidioutdev;
-    int midioutdev[MAXMIDIOUTDEV];
-
-    if(filename && *filename)
-        sys_initsavepreferences_file(filename);
-    else
-        sys_initsavepreferences();
-    /* audio settings */
-    sys_get_audio_settings(&as);
-
-    sprintf(buf1, "%d", as.a_api);
-    sys_putpreference("audioapi", buf1);
-    sys_putpreference("noaudioin", (as.a_nindev <= 0 ? "True" : "False"));
-    for(i = 0; i < as.a_nindev; i++)
-    {
-        sprintf(buf1, "audioindev%d", i + 1);
-        sprintf(buf2, "%d %d", as.a_indevvec[i], as.a_chindevvec[i]);
-        sys_putpreference(buf1, buf2);
-        sprintf(buf1, "audioindevname%d", i + 1);
-        sys_audiodevnumbertoname(0, as.a_indevvec[i], buf2, MAXPDSTRING);
-        if(!*buf2) strcat(buf2, "?");
-        sys_putpreference(buf1, buf2);
-    }
-    sys_putpreference("noaudioout", (as.a_noutdev <= 0 ? "True" : "False"));
-    for(i = 0; i < as.a_noutdev; i++)
-    {
-        sprintf(buf1, "audiooutdev%d", i + 1);
-        sprintf(buf2, "%d %d", as.a_outdevvec[i], as.a_choutdevvec[i]);
-        sys_putpreference(buf1, buf2);
-        sprintf(buf1, "audiooutdevname%d", i + 1);
-        sys_audiodevnumbertoname(1, as.a_outdevvec[i], buf2, MAXPDSTRING);
-        if(!*buf2) strcat(buf2, "?");
-        sys_putpreference(buf1, buf2);
+        sys_doneloadpreferences();
     }
 
-    sprintf(buf1, "%d", as.a_advance);
-    sys_putpreference("audiobuf", buf1);
-
-    sprintf(buf1, "%d", as.a_srate);
-    sys_putpreference("rate", buf1);
-
-    sprintf(buf1, "%d", as.a_callback);
-    sys_putpreference("callback", buf1);
-
-    sprintf(buf1, "%d", as.a_blocksize);
-    sys_putpreference("audioblocksize", buf1);
-
-    /* MIDI settings */
-    sprintf(buf1, "%d", sys_midiapi);
-    sys_putpreference("midiapi", buf1);
-
-    sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
-    sys_putpreference("nomidiin", (nmidiindev <= 0 ? "True" : "False"));
-    for(i = 0; i < nmidiindev; i++)
+    void sys_savepreferences(const char *filename)
     {
-        sprintf(buf1, "midiindev%d", i + 1);
-        sprintf(buf2, "%d", midiindev[i]);
-        sys_putpreference(buf1, buf2);
-        sprintf(buf1, "midiindevname%d", i + 1);
-        sys_mididevnumbertoname(0, midiindev[i], buf2, MAXPDSTRING);
-        if(!*buf2) strcat(buf2, "?");
-        sys_putpreference(buf1, buf2);
+        t_audiosettings as;
+        int i;
+        char buf1[MAXPDSTRING];
+        char buf2[MAXPDSTRING];
+        int nmidiindev;
+        int midiindev[MAXMIDIINDEV];
+        int nmidioutdev;
+        int midioutdev[MAXMIDIOUTDEV];
+
+        if(filename && *filename)
+        {
+            sys_initsavepreferences_file(filename);
+        }
+        else
+        {
+            sys_initsavepreferences();
+        }
+        /* audio settings */
+        sys_get_audio_settings(&as);
+
+        sprintf(buf1, "%d", as.a_api);
+        sys_putpreference("audioapi", buf1);
+        sys_putpreference("noaudioin", (as.a_nindev <= 0 ? "True" : "False"));
+        for(i = 0; i < as.a_nindev; i++)
+        {
+            sprintf(buf1, "audioindev%d", i + 1);
+            sprintf(buf2, "%d %d", as.a_indevvec[i], as.a_chindevvec[i]);
+            sys_putpreference(buf1, buf2);
+            sprintf(buf1, "audioindevname%d", i + 1);
+            sys_audiodevnumbertoname(0, as.a_indevvec[i], buf2, MAXPDSTRING);
+            if(!*buf2) strcat(buf2, "?");
+            sys_putpreference(buf1, buf2);
+        }
+        sys_putpreference("noaudioout", (as.a_noutdev <= 0 ? "True" : "False"));
+        for(i = 0; i < as.a_noutdev; i++)
+        {
+            sprintf(buf1, "audiooutdev%d", i + 1);
+            sprintf(buf2, "%d %d", as.a_outdevvec[i], as.a_choutdevvec[i]);
+            sys_putpreference(buf1, buf2);
+            sprintf(buf1, "audiooutdevname%d", i + 1);
+            sys_audiodevnumbertoname(1, as.a_outdevvec[i], buf2, MAXPDSTRING);
+            if(!*buf2) strcat(buf2, "?");
+            sys_putpreference(buf1, buf2);
+        }
+
+        sprintf(buf1, "%d", as.a_advance);
+        sys_putpreference("audiobuf", buf1);
+
+        sprintf(buf1, "%d", as.a_srate);
+        sys_putpreference("rate", buf1);
+
+        sprintf(buf1, "%d", as.a_callback);
+        sys_putpreference("callback", buf1);
+
+        sprintf(buf1, "%d", as.a_blocksize);
+        sys_putpreference("audioblocksize", buf1);
+
+        /* MIDI settings */
+        sprintf(buf1, "%d", sys_midiapi);
+        sys_putpreference("midiapi", buf1);
+
+        sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
+        sys_putpreference("nomidiin", (nmidiindev <= 0 ? "True" : "False"));
+        for(i = 0; i < nmidiindev; i++)
+        {
+            sprintf(buf1, "midiindev%d", i + 1);
+            sprintf(buf2, "%d", midiindev[i]);
+            sys_putpreference(buf1, buf2);
+            sprintf(buf1, "midiindevname%d", i + 1);
+            sys_mididevnumbertoname(0, midiindev[i], buf2, MAXPDSTRING);
+            if(!*buf2) strcat(buf2, "?");
+            sys_putpreference(buf1, buf2);
+        }
+        sys_putpreference("nomidiout", (nmidioutdev <= 0 ? "True" : "False"));
+        for(i = 0; i < nmidioutdev; i++)
+        {
+            sprintf(buf1, "midioutdev%d", i + 1);
+            sprintf(buf2, "%d", midioutdev[i]);
+            sys_putpreference(buf1, buf2);
+            sprintf(buf1, "midioutdevname%d", i + 1);
+            sys_mididevnumbertoname(1, midioutdev[i], buf2, MAXPDSTRING);
+            if(!*buf2) strcat(buf2, "?");
+            sys_putpreference(buf1, buf2);
+        }
+        /* file search path */
+
+        for(i = 0; 1; i++)
+        {
+            const char *pathelem = namelist_get(STUFF->st_searchpath, i);
+            if(!pathelem) break;
+            sprintf(buf1, "path%d", i + 1);
+            sys_putpreference(buf1, pathelem);
+        }
+        sprintf(buf1, "%d", i);
+        sys_putpreference("npath", buf1);
+        sprintf(buf1, "%d", sys_usestdpath);
+        sys_putpreference("standardpath", buf1);
+        sprintf(buf1, "%d", sys_verbose);
+        sys_putpreference("verbose", buf1);
+
+        /* startup */
+        for(i = 0; 1; i++)
+        {
+            const char *pathelem = namelist_get(STUFF->st_externlist, i);
+            if(!pathelem) break;
+            sprintf(buf1, "loadlib%d", i + 1);
+            sys_putpreference(buf1, pathelem);
+        }
+        sprintf(buf1, "%d", i);
+        sys_putpreference("nloadlib", buf1);
+        sprintf(buf1, "%d", sys_defeatrt);
+        sys_putpreference("defeatrt", buf1);
+        sys_putpreference("flags", (sys_flags ? sys_flags->s_name : ""));
+        /* misc */
+        sprintf(buf1, "%d", sys_zoom_open);
+        sys_putpreference("zoom", buf1);
+        sys_putpreference("loading", "no");
+
+        sys_donesavepreferences();
     }
-    sys_putpreference("nomidiout", (nmidioutdev <= 0 ? "True" : "False"));
-    for(i = 0; i < nmidioutdev; i++)
+
+    /* calls from GUI to load/save from/to a file */
+    void glob_loadpreferences(t_pd * dummy, t_symbol * filesym)
     {
-        sprintf(buf1, "midioutdev%d", i + 1);
-        sprintf(buf2, "%d", midioutdev[i]);
-        sys_putpreference(buf1, buf2);
-        sprintf(buf1, "midioutdevname%d", i + 1);
-        sys_mididevnumbertoname(1, midioutdev[i], buf2, MAXPDSTRING);
-        if(!*buf2) strcat(buf2, "?");
-        sys_putpreference(buf1, buf2);
+        sys_loadpreferences(filesym->s_name, 0);
+        sys_close_audio();
+        sys_reopen_audio();
+        sys_close_midi();
+        sys_reopen_midi();
     }
-    /* file search path */
 
-    for(i = 0; 1; i++)
+    void glob_savepreferences(t_pd * dummy, t_symbol * filesym)
     {
-        const char *pathelem = namelist_get(STUFF->st_searchpath, i);
-        if(!pathelem) break;
-        sprintf(buf1, "path%d", i + 1);
-        sys_putpreference(buf1, pathelem);
+        sys_savepreferences(filesym->s_name);
     }
-    sprintf(buf1, "%d", i);
-    sys_putpreference("npath", buf1);
-    sprintf(buf1, "%d", sys_usestdpath);
-    sys_putpreference("standardpath", buf1);
-    sprintf(buf1, "%d", sys_verbose);
-    sys_putpreference("verbose", buf1);
 
-    /* startup */
-    for(i = 0; 1; i++)
+    void glob_forgetpreferences(t_pd * dummy)
     {
-        const char *pathelem = namelist_get(STUFF->st_externlist, i);
-        if(!pathelem) break;
-        sprintf(buf1, "loadlib%d", i + 1);
-        sys_putpreference(buf1, pathelem);
-    }
-    sprintf(buf1, "%d", i);
-    sys_putpreference("nloadlib", buf1);
-    sprintf(buf1, "%d", sys_defeatrt);
-    sys_putpreference("defeatrt", buf1);
-    sys_putpreference("flags", (sys_flags ? sys_flags->s_name : ""));
-    /* misc */
-    sprintf(buf1, "%d", sys_zoom_open);
-    sys_putpreference("zoom", buf1);
-    sys_putpreference("loading", "no");
-
-    sys_donesavepreferences();
-}
-
-/* calls from GUI to load/save from/to a file */
-void glob_loadpreferences(t_pd *dummy, t_symbol *filesym)
-{
-    sys_loadpreferences(filesym->s_name, 0);
-    sys_close_audio();
-    sys_reopen_audio();
-    sys_close_midi();
-    sys_reopen_midi();
-}
-
-void glob_savepreferences(t_pd *dummy, t_symbol *filesym)
-{
-    sys_savepreferences(filesym->s_name);
-}
-
-void glob_forgetpreferences(t_pd *dummy)
-{
 #if !defined(_WIN32) && !defined(__APPLE__)
-    char user_prefs_file[MAXPDSTRING]; /* user prefs file */
-    const char *homedir = getenv("HOME");
-    struct stat statbuf;
-    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
-        (homedir ? homedir : "."));
-    user_prefs_file[MAXPDSTRING - 1] = 0;
-    if(stat(user_prefs_file, &statbuf) != 0)
-    {
-        post("no Pd settings to clear");
-    }
-    else if(!unlink(user_prefs_file))
-    {
-        post("removed %s file", user_prefs_file);
-    }
-    else
-    {
-        post("couldn't delete %s file: %s", user_prefs_file, strerror(errno));
-    }
+        char user_prefs_file[MAXPDSTRING]; /* user prefs file */
+        const char *homedir = getenv("HOME");
+        struct stat statbuf;
+        snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
+            (homedir ? homedir : "."));
+        user_prefs_file[MAXPDSTRING - 1] = 0;
+        if(stat(user_prefs_file, &statbuf) != 0)
+        {
+            post("no Pd settings to clear");
+        }
+        else if(!unlink(user_prefs_file))
+        {
+            post("removed %s file", user_prefs_file);
+        }
+        else
+        {
+            post("couldn't delete %s file: %s", user_prefs_file,
+                strerror(errno));
+        }
 #endif /* !defined(_WIN32) && !defined(__APPLE__) */
 #ifdef __APPLE__
-    char cmdbuf[MAXPDSTRING];
-    int warn = 1;
-    if(!sys_getpreference("audioapi", cmdbuf, MAXPDSTRING))
-        post("no Pd settings to clear"), warn = 0;
-    /* do it anyhow, why not... */
-    snprintf(
-        cmdbuf, MAXPDSTRING, "defaults delete org.puredata.pd 2> /dev/null\n");
-    if(system(cmdbuf) && warn)
-        post("failed to erase Pd settings");
-    else if(warn)
-        post("erased Pd settings");
+        char cmdbuf[MAXPDSTRING];
+        int warn = 1;
+        if(!sys_getpreference("audioapi", cmdbuf, MAXPDSTRING))
+            post("no Pd settings to clear"), warn = 0;
+        /* do it anyhow, why not... */
+        snprintf(cmdbuf, MAXPDSTRING,
+            "defaults delete org.puredata.pd 2> /dev/null\n");
+        if(system(cmdbuf) && warn)
+            post("failed to erase Pd settings");
+        else if(warn)
+            post("erased Pd settings");
 #endif /* __APPLE__ */
 #ifdef _WIN32
-    HKEY hkey;
-    if(RegOpenKeyEx(HKEY_CURRENT_USER, "Software", 0, KEY_QUERY_VALUE, &hkey) !=
-        ERROR_SUCCESS)
-        post("no Pd settings to erase");
-    else
-    {
-        if(RegDeleteKey(hkey, "Pure-Data") != ERROR_SUCCESS)
+        HKEY hkey;
+        if(RegOpenKeyEx(HKEY_CURRENT_USER, "Software", 0, KEY_QUERY_VALUE,
+               &hkey) != ERROR_SUCCESS)
             post("no Pd settings to erase");
         else
-            post("erased Pd settings");
-        RegCloseKey(hkey);
-    }
-#endif /* _WIN32 */
-}
-
-int sys_oktoloadfiles(int done)
-{
-#if defined(_WIN32) || defined(__APPLE__)
-    if(done)
-    {
-        sys_putpreference("loading", "no");
-        return (1);
-    }
-    else
-    {
-        char prefbuf[MAXPDSTRING];
-        if(sys_getpreference("loading", prefbuf, MAXPDSTRING) &&
-            strcmp(prefbuf, "no"))
         {
-            post("skipping loading preferences... Pd seems to have crashed on "
-                 "startup");
-            post("(re-save preferences to reinstate them)");
-            return (0);
+            if(RegDeleteKey(hkey, "Pure-Data") != ERROR_SUCCESS)
+                post("no Pd settings to erase");
+            else
+                post("erased Pd settings");
+            RegCloseKey(hkey);
+        }
+#endif /* _WIN32 */
+    }
+
+    int sys_oktoloadfiles(int done)
+    {
+#if defined(_WIN32) || defined(__APPLE__)
+        if(done)
+        {
+            sys_putpreference("loading", "no");
+            return (1);
         }
         else
         {
-            sys_putpreference("loading", "yes");
-            return (1);
+            char prefbuf[MAXPDSTRING];
+            if(sys_getpreference("loading", prefbuf, MAXPDSTRING) &&
+                strcmp(prefbuf, "no"))
+            {
+                post("skipping loading preferences... Pd seems to have crashed "
+                     "on "
+                     "startup");
+                post("(re-save preferences to reinstate them)");
+                return (0);
+            }
+            else
+            {
+                sys_putpreference("loading", "yes");
+                return (1);
+            }
         }
-    }
 #else
-    return (1);
+        return (1);
 #endif
-}
+    }

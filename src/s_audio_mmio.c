@@ -76,6 +76,7 @@ static void mmio_allocbufs(
     int devno;
     int bufno;
     for(devno = 0; devno < ndevs; devno++)
+    {
         for(bufno = 0; bufno < nbufs; bufno++)
         {
             WAVEHDR *wh;
@@ -120,6 +121,7 @@ static void mmio_allocbufs(
              */
             if(setdone) wh->dwFlags = WHDR_DONE;
         }
+    }
 }
 
 static void mmio_freebufs(t_sbuf bp[][MAXBUFFER], int ndevs, int nbufs)
@@ -129,6 +131,7 @@ static void mmio_freebufs(t_sbuf bp[][MAXBUFFER], int ndevs, int nbufs)
     int devno;
     int bufno;
     for(devno = 0; devno < ndevs; devno++)
+    {
         for(bufno = 0; bufno < nbufs; bufno++)
         {
             /* unlock and free memory for the waveform data.  */
@@ -141,6 +144,7 @@ static void mmio_freebufs(t_sbuf bp[][MAXBUFFER], int ndevs, int nbufs)
             GlobalUnlock(bp[devno][bufno].lpWaveHdr);
             GlobalFree(bp[devno][bufno].hWaveHdr);
         }
+    }
 }
 
 static UINT nt_whichdac = WAVE_MAPPER, nt_whichadc = WAVE_MAPPER;
@@ -520,9 +524,13 @@ int mmio_send_dacs(void)
         {
             t_sample f = STUFF->st_soundin[i];
             if(f > maxsamp)
+            {
                 maxsamp = f;
+            }
             else if(-f > maxsamp)
+            {
                 maxsamp = -f;
+            }
         }
         nt_inmax = maxsamp;
         for(i = 0, n = 2 * nt_nwaveout * DEFDACBLKSIZE, maxsamp = nt_outmax;
@@ -530,9 +538,13 @@ int mmio_send_dacs(void)
         {
             t_sample f = STUFF->st_soundout[i];
             if(f > maxsamp)
+            {
                 maxsamp = f;
+            }
             else if(-f > maxsamp)
+            {
                 maxsamp = -f;
+            }
         }
         nt_outmax = maxsamp;
     }
@@ -588,9 +600,13 @@ int mmio_send_dacs(void)
             {
                 int x1 = 32767.f * *fp2;
                 if(x1 > 32767)
+                {
                     x1 = 32767;
+                }
                 else if(x1 < -32767)
+                {
                     x1 = -32767;
+                }
                 *sp2 = x1;
             }
         }
@@ -734,8 +750,10 @@ int mmio_open_audio(int naudioindev, int *audioindev, int nchindev,
     nt_whichdac = (naudiooutdev < 1 ? (nt_nwaveout > 1 ? WAVE_MAPPER : -1)
                                     : audiooutdev[0]);
     if(naudiooutdev > 1 || naudioindev > 1)
+    {
         post("separate audio device choice not supported; using sequential "
              "devices.");
+    }
     return (mmio_do_open_audio());
     logpost(NULL, PD_VERBOSE, "done opening audio...");
 }

@@ -71,8 +71,10 @@ void sys_do_open_midi(
                     err = Pm_OpenInput(&mac_midiindevlist[mac_nmidiindev], j,
                         NULL, 1024, NULL, NULL);
                     if(err)
+                    {
                         post("could not open MIDI input %d (%s): %s", j,
                             info->name, Pm_GetErrorText(err));
+                    }
                     else
                     {
                         /* disable default active sense filtering */
@@ -100,8 +102,10 @@ void sys_do_open_midi(
                     err = Pm_OpenOutput(&mac_midioutdevlist[mac_nmidioutdev], j,
                         NULL, 0, NULL, NULL, 0);
                     if(err)
+                    {
                         post("could not open MIDI output %d (%s): %s", j,
                             info->name, Pm_GetErrorText(err));
+                    }
                     else
                     {
                         logpost(NULL, PD_VERBOSE, "MIDI output (%s) opened.",
@@ -294,8 +298,11 @@ void sys_poll_midi(void)
                     sys_midibytein(i, status);
                 }
                 else if(nd_sysex_mode)
+                {
                     nd_sysex_inword(i, status, data1, data2, data3);
+                }
                 else
+                {
                     switch(msgtype)
                     {
                         /* 2 data bytes */
@@ -327,6 +334,7 @@ void sys_poll_midi(void)
                             sys_midibytein(i, status);
                             break;
                     }
+                }
             }
             else
             {

@@ -46,9 +46,13 @@ static void sighip_ft1(t_sighip *x, t_floatarg f)
     x->x_hz = f;
     x->x_cspace.c_coef = 1 - f * (2 * 3.14159) / x->x_sr;
     if(x->x_cspace.c_coef < 0)
+    {
         x->x_cspace.c_coef = 0;
+    }
     else if(x->x_cspace.c_coef > 1)
+    {
         x->x_cspace.c_coef = 1;
+    }
 }
 
 static t_int *sighip_perform(t_int *w)
@@ -170,9 +174,13 @@ static void siglop_ft1(t_siglop *x, t_floatarg f)
     x->x_hz = f;
     x->x_cspace.c_coef = f * (2 * 3.14159) / x->x_sr;
     if(x->x_cspace.c_coef > 1)
+    {
         x->x_cspace.c_coef = 1;
+    }
     else if(x->x_cspace.c_coef < 0)
+    {
         x->x_cspace.c_coef = 0;
+    }
 }
 
 static void siglop_clear(t_siglop *x, t_floatarg q) { x->x_cspace.c_x = 0; }
@@ -275,9 +283,13 @@ static void sigbp_docoef(t_sigbp *x, t_floatarg f, t_floatarg q)
     t_float omega = f * (2.0f * 3.14159f) / x->x_sr;
     t_float oneminusr;
     if(q < 0.001)
+    {
         oneminusr = 1.0f;
+    }
     else
+    {
         oneminusr = omega / q;
+    }
 
     if(oneminusr > 1.0f) oneminusr = 1.0f;
 
@@ -1050,25 +1062,43 @@ static t_int *slop_tilde_perform(t_int *w)
         t_sample maxdiff = poslimit[i];
         t_sample mindiff = neglimit[i];
         if(inc < 0.f)
+        {
             inc = 0.f;
+        }
         else if(inc > 1.f)
+        {
             inc = 1.f;
+        }
         if(posinc < 0.f)
+        {
             posinc = 0.f;
+        }
         else if(posinc > 1.f)
+        {
             posinc = 1.f;
+        }
         if(neginc < 0.f)
+        {
             neginc = 0.f;
+        }
         else if(neginc > 1.f)
+        {
             neginc = 1.f;
+        }
         if(maxdiff < 0) maxdiff = 0;
         if(mindiff < 0) mindiff = 0;
         if(diff > maxdiff)
+        {
             diffinc = posinc * (diff - maxdiff) + inc * maxdiff;
+        }
         else if(diff < -mindiff)
+        {
             diffinc = neginc * (diff + mindiff) - inc * mindiff;
+        }
         else
+        {
             diffinc = inc * diff;
+        }
         last = out[i] = last + diffinc;
     }
     if(PD_BIGORSMALL(last)) last = 0;

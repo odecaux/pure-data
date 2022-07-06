@@ -132,7 +132,9 @@ static void textbuf_read(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-c"))
+        {
             cr = 1;
+        }
         else
         {
             pd_error(x, "text read: unknown flag ...");
@@ -173,7 +175,9 @@ static void textbuf_write(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-c"))
+        {
             cr = 1;
+        }
         else
         {
             pd_error(x, "text write: unknown flag ...");
@@ -269,7 +273,9 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-k"))
+        {
             x->x_keep = 1;
+        }
         else
         {
             pd_error(x, "text define: unknown flag ...");
@@ -347,7 +353,9 @@ static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
         binbuf_add(b, binbuf_getnatom(x->x_textbuf.b_binbuf),
             binbuf_getvec(x->x_textbuf.b_binbuf));
         if(gs->gs_which == GP_GLIST)
+        {
             scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);
+        }
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
@@ -395,7 +403,9 @@ whomever is bound to the given symbol */
 static void text_define_send(t_text_define *x, t_symbol *s)
 {
     if(!s->s_thing)
+    {
         pd_error(x, "text_define_send: %s: no such object", s->s_name);
+    }
     else
     {
         gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
@@ -432,8 +442,10 @@ static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
         }
     }
     for(count = k->ki_onset; count--; a2++)
+    {
         if(a2->a_type == A_SEMI || a2->a_type == A_COMMA)
             return (-k->ki_forward);
+    }
     /* compare remaining fields */
     for(;; a1++, a2++)
     {
@@ -441,23 +453,33 @@ static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
         {
             /* hit end of first line */
             if(a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+            {
                 goto equal;
+            }
             else
+            {
                 return (-k->ki_forward);
+            }
         }
         else if(a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+        {
             return (k->ki_forward); /* hit end of second line */
 
-        /* otherwise if they're different return something, and
-        if not proceed to next field */
+            /* otherwise if they're different return something, and
+            if not proceed to next field */
+        }
         else if(a1->a_type == A_FLOAT)
         {
             if(a2->a_type == A_FLOAT)
             {
                 if(a1->a_w.w_float < a2->a_w.w_float)
+                {
                     return (-k->ki_forward);
+                }
                 else if(a1->a_w.w_float > a2->a_w.w_float)
+                {
                     return (k->ki_forward);
+                }
             }
             else
                 return (-k->ki_forward);
@@ -480,9 +502,13 @@ equal:
     might not be identical because of a nonzero onset) stay in the
     same order as before. */
     if(a1 < a2)
+    {
         return (-1);
+    }
     else
+    {
         return (1);
+    }
 }
 
 /* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
@@ -524,9 +550,13 @@ static void text_define_sort(
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+        {
             unique = 1;
+        }
         else if(!strcmp(argv->a_w.w_symbol->s_name, "-r"))
+        {
             k.ki_forward = -1;
+        }
         else if(!strcmp(argv->a_w.w_symbol->s_name, "-k") && argc > 1 &&
                 argv[1].a_type == A_FLOAT)
         {
@@ -552,9 +582,11 @@ static void text_define_sort(
     if(!natom) return;
     /* last thing in buffer should be a terminator */
     if(vec[natom - 1].a_type != A_SEMI && vec[natom - 1].a_type != A_COMMA)
+    {
         binbuf_addsemi(x->x_binbuf), vec = binbuf_getvec(x->x_binbuf),
                                      natom = binbuf_getnatom(x->x_binbuf),
                                      nlines++;
+    }
     for(i = nlines = 0; i < natom; i++)
         if(vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA) nlines++;
     sortbuf = (t_atom **) getbytes(nlines * sizeof(*sortbuf));
@@ -587,9 +619,13 @@ static void text_define_sort(
                 if(a1->a_type == A_SEMI || a1->a_type == A_COMMA)
                 {
                     if(a1->a_type == a2->a_type)
+                    {
                         goto skipit; /* duplicate line, don't copy */
+                    }
                     else
+                    {
                         goto doit;
+                    }
                 }
                 else if(a1->a_type != a2->a_type ||
                         (a1->a_type == A_FLOAT &&
@@ -653,7 +689,9 @@ static void text_client_argparse(
         !strcmp(argv->a_w.w_symbol->s_name, "-s"))
     {
         if(argc < 3 || argv[1].a_type != A_SYMBOL || argv[2].a_type != A_SYMBOL)
+        {
             pd_error(x, "%s: '-s' needs a struct and field name", name);
+        }
         else
         {
             x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
@@ -681,7 +719,9 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
         t_textbuf *y =
             (t_textbuf *) pd_findbyclass(x->tc_sym, text_define_class);
         if(y)
+        {
             return (y->b_binbuf);
+        }
         else
         {
             pd_error(
@@ -708,9 +748,13 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
             return (0);
         }
         if(gs->gs_which == GP_ARRAY)
+        {
             vec = x->tc_gp.gp_un.gp_w;
+        }
         else
+        {
             vec = x->tc_gp.gp_un.gp_scalar->sc_vec;
+        }
 
         if(!template_find_field(
                template, x->tc_field, &onset, &type, &arraytype))
@@ -736,9 +780,13 @@ static void text_client_senditup(t_text_client *x)
         t_textbuf *y =
             (t_textbuf *) pd_findbyclass(x->tc_sym, text_define_class);
         if(y)
+        {
             textbuf_senditup(y);
+        }
         else
+        {
             bug("text_client_senditup");
+        }
     }
     else if(x->tc_struct) /* by pointer */
     {
@@ -755,7 +803,9 @@ static void text_client_senditup(t_text_client *x)
             return;
         }
         if(gs->gs_which == GP_GLIST)
+        {
             scalar_redraw(x->tc_gp.gp_un.gp_scalar, gs->gs_un.gs_glist);
+        }
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
@@ -800,7 +850,9 @@ static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
     if(argc)
     {
         if(argv->a_type == A_FLOAT)
+        {
             x->x_f1 = argv->a_w.w_float;
+        }
         else
         {
             post("text get: can't understand field number");
@@ -813,7 +865,9 @@ static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
     if(argc)
     {
         if(argv->a_type == A_FLOAT)
+        {
             x->x_f2 = argv->a_w.w_float;
+        }
         else
         {
             post("text get: can't understand field count");
@@ -830,9 +884,13 @@ static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -866,10 +924,14 @@ static void text_get_float(t_text_get *x, t_floatarg f)
             ATOMS_FREEA(outv, outc);
         }
         else if(startfield + nfield > outc)
+        {
             pd_error(x, "text get: field request (%d %d) out of range",
                 startfield, nfield);
+        }
         else if(nfield < 0)
+        {
             pd_error(x, "text get: bad field count (%d)", nfield);
+        }
         else
         {
             ATOMS_ALLOCA(outv, nfield);
@@ -907,7 +969,9 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
     if(argc)
     {
         if(argv->a_type == A_FLOAT)
+        {
             x->x_f1 = argv->a_w.w_float;
+        }
         else
         {
             post("text set: can't understand line number");
@@ -920,7 +984,9 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
     if(argc)
     {
         if(argv->a_type == A_FLOAT)
+        {
             x->x_f2 = argv->a_w.w_float;
+        }
         else
         {
             post("text set: can't understand field number");
@@ -937,9 +1003,13 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -995,8 +1065,8 @@ static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
     }
     else if(fieldno < 0) /* if line number too high just append to end */
     {
-        int addsemi = (n && vec[n - 1].a_type != A_SEMI &&
-                       vec[n - 1].a_type != A_COMMA);
+        int addsemi =
+            (n && vec[n - 1].a_type != A_SEMI && vec[n - 1].a_type != A_COMMA);
         int newsize = n + addsemi + argc + 1;
         (void) binbuf_resize(b, newsize);
         vec = binbuf_getvec(b);
@@ -1012,9 +1082,13 @@ static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
     for(i = 0; i < argc; i++)
     {
         if(argv[i].a_type == A_POINTER)
+        {
             SETSYMBOL(&vec[start + i], gensym("(pointer)"));
+        }
         else
+        {
             vec[start + i] = argv[i];
+        }
     }
     text_client_senditup(&x->x_tc);
 }
@@ -1037,7 +1111,9 @@ static void *text_insert_new(t_symbol *s, int argc, t_atom *argv)
     if(argc)
     {
         if(argv->a_type == A_FLOAT)
+        {
             x->x_f1 = argv->a_w.w_float;
+        }
         else
         {
             post("text insert: can't understand line number");
@@ -1054,9 +1130,13 @@ static void *text_insert_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -1084,14 +1164,20 @@ static void text_insert_list(
     (void) binbuf_resize(b, (n = nwas + argc + 1));
     vec = binbuf_getvec(b);
     if(start < n)
+    {
         memmove(&vec[start + (argc + 1)], &vec[start],
             sizeof(*vec) * (nwas - start));
+    }
     for(i = 0; i < argc; i++)
     {
         if(argv[i].a_type == A_POINTER)
+        {
             SETSYMBOL(&vec[start + i], gensym("(pointer)"));
+        }
         else
+        {
             vec[start + i] = argv[i];
+        }
     }
     SETSEMI(&vec[start + argc]);
     text_client_senditup(&x->x_tc);
@@ -1116,9 +1202,13 @@ static void *text_delete_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -1134,7 +1224,9 @@ static void text_delete_float(t_text_delete *x, t_floatarg f)
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if(lineno < 0)
+    {
         binbuf_clear(b);
+    }
     else if(text_nthline(n, vec, lineno, &start, &end))
     {
         if(end < n) end++;
@@ -1170,9 +1262,13 @@ static void *text_size_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -1205,9 +1301,13 @@ static void text_size_float(t_text_size *x, t_floatarg f)
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if(text_nthline(n, vec, f, &start, &end))
+    {
         outlet_float(x->x_out1, end - start);
+    }
     else
+    {
         outlet_float(x->x_out1, -1);
+    }
 }
 
 /* ---------------- text_tolist object - output text as a list ----------- */
@@ -1227,9 +1327,13 @@ static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->tc_struct)
+    {
         pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    }
     else
+    {
         symbolinlet_new(&x->tc_obj, &x->tc_sym);
+    }
     return (x);
 }
 
@@ -1259,9 +1363,13 @@ static void *text_fromlist_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->tc_struct)
+    {
         pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    }
     else
+    {
         symbolinlet_new(&x->tc_obj, &x->tc_sym);
+    }
     return (x);
 }
 
@@ -1320,8 +1428,11 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     x->x_range = 0x7fffffff;
     x->x_keyvec = (t_key *) getbytes(nkey * sizeof(*x->x_keyvec));
     if(!argc)
+    {
         x->x_keyvec[0].k_field = 0, x->x_keyvec[0].k_binop = KB_EQ;
+    }
     else
+    {
         for(i = key = 0, nextop = -1; i < argc; i++)
         {
             if(argv[i].a_type == A_FLOAT)
@@ -1336,27 +1447,46 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
             {
                 const char *s = argv[i].a_w.w_symbol->s_name;
                 if(nextop >= 0)
+                {
                     pd_error(x,
                         "text search: extra operation argument ignored: %s", s);
+                }
                 else if(!strcmp(argv[i].a_w.w_symbol->s_name, ">"))
+                {
                     nextop = KB_GT;
+                }
                 else if(!strcmp(argv[i].a_w.w_symbol->s_name, ">="))
+                {
                     nextop = KB_GE;
+                }
                 else if(!strcmp(argv[i].a_w.w_symbol->s_name, "<"))
+                {
                     nextop = KB_LT;
+                }
                 else if(!strcmp(argv[i].a_w.w_symbol->s_name, "<="))
+                {
                     nextop = KB_LE;
+                }
                 else if(!strcmp(argv[i].a_w.w_symbol->s_name, "near"))
+                {
                     nextop = KB_NEAR;
+                }
                 else
+                {
                     pd_error(
                         x, "text search: unknown operation argument: %s", s);
+                }
             }
         }
+    }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    }
     return (x);
 }
 
@@ -1451,11 +1581,15 @@ static void text_search_list(
                         argv[j].a_w.w_symbol)
                         goto nomatch;
                 }
-                if(++j >= nkeys) /* if at last key just increment field */
+                if(++j >= nkeys)
+                { /* if at last key just increment field */
                     field++;
+                }
                 else
+                {
                     field = x->x_keyvec[j].k_field, /* else next key */
                         binop = x->x_keyvec[j].k_binop;
+                }
             }
             /* the line matches.  Now, if there is a previous match, are
             we better than it? */
@@ -1471,41 +1605,57 @@ static void text_search_list(
                     if(argv[j].a_type == A_FLOAT) /* arg is a float */
                     {
                         float thisv = vec[thisstart + field].a_w.w_float;
-                        float bestv = (beststart >= 0
-                                           ? vec[beststart + field].a_w.w_float
-                                           : -1e20);
+                        float bestv =
+                            (beststart >= 0 ? vec[beststart + field].a_w.w_float
+                                            : -1e20);
                         switch(binop)
                         {
                             case KB_GT:
                             case KB_GE:
                                 if(thisv < bestv)
+                                {
                                     goto replace;
+                                }
                                 else if(thisv > bestv)
+                                {
                                     goto nomatch;
+                                }
                                 break;
                             case KB_LT:
                             case KB_LE:
                                 if(thisv > bestv)
+                                {
                                     goto replace;
+                                }
                                 else if(thisv < bestv)
+                                {
                                     goto nomatch;
+                                }
                                 break;
                             case KB_NEAR:
                                 if(thisv >= argv[j].a_w.w_float &&
                                     bestv >= argv[j].a_w.w_float)
                                 {
                                     if(thisv < bestv)
+                                    {
                                         goto replace;
+                                    }
                                     else if(thisv > bestv)
+                                    {
                                         goto nomatch;
+                                    }
                                 }
                                 else if(thisv <= argv[j].a_w.w_float &&
                                         bestv <= argv[j].a_w.w_float)
                                 {
                                     if(thisv > bestv)
+                                    {
                                         goto replace;
+                                    }
                                     else if(thisv < bestv)
+                                    {
                                         goto nomatch;
+                                    }
                                 }
                                 else
                                 {
@@ -1515,19 +1665,27 @@ static void text_search_list(
                                     if(d2 < 0) d2 = -d2;
 
                                     if(d1 < d2)
+                                    {
                                         goto replace;
+                                    }
                                     else if(d1 > d2)
+                                    {
                                         goto nomatch;
+                                    }
                                 }
                                 break;
                                 /* the other possibility ('=') never decides */
                         }
                     }
-                    if(++j >= nkeys) /* last key - increment field */
+                    if(++j >= nkeys)
+                    { /* last key - increment field */
                         field++;
+                    }
                     else
+                    {
                         field = x->x_keyvec[j].k_field, /* else next key */
                             binop = x->x_keyvec[j].k_binop;
+                    }
                 }
                 goto nomatch; /* a tie - keep the old one */
             replace:
@@ -1609,7 +1767,9 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
             argv += 1;
         }
         else if(!strcmp(argv->a_w.w_symbol->s_name, "-g"))
+        {
             global = 1;
+        }
         else if(!strcmp(argv->a_w.w_symbol->s_name, "-t") && argc >= 3)
         {
             text_sequence_tempo(x, atom_getsymbolarg(2, argc, argv),
@@ -1632,9 +1792,13 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_tc.tc_struct)
+    {
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
+    }
     x->x_argc = 0;
     x->x_argv = (t_atom *) getbytes(0);
     x->x_onset = 0x7fffffff;
@@ -1646,8 +1810,10 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     if(global)
     {
         if(x->x_waitargc)
+        {
             pd_error(x, "warning: text sequence: numeric 'w' argument ignored "
                         "if '-g' given");
+        }
         x->x_waitargc = 0x40000000;
     }
     return (x);
@@ -1726,7 +1892,9 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
     {
         int type = ap->a_type;
         if(type == A_FLOAT || type == A_SYMBOL)
+        {
             outvec[i] = *ap;
+        }
         else if(type == A_DOLLAR)
         {
             int atno = ap->a_w.w_index - 1;
@@ -1743,7 +1911,9 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
             t_symbol *s =
                 binbuf_realizedollsym(ap->a_w.w_symbol, argc, argv, 0);
             if(s)
+            {
                 SETSYMBOL(outvec + i, s);
+            }
             else
             {
                 pd_error(0, "$%s: not enough arguments supplied",
@@ -1759,9 +1929,13 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
         x->x_loop = 0;
         x->x_lastto = 0;
         if(x->x_auto && nfield == 1 && outvec[0].a_type == A_FLOAT)
+        {
             x->x_nextdelay = outvec[0].a_w.w_float;
+        }
         else if(!x->x_waitout)
+        {
             bug("text sequence 3");
+        }
         else
         {
             x->x_auto = 0;
@@ -1778,9 +1952,13 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
             n2++;
         }
         if(!gotcomma)
+        {
             x->x_lastto = 0;
+        }
         else if(!x->x_lastto && nfield && outvec->a_type == A_SYMBOL)
+        {
             x->x_lastto = outvec->a_w.w_symbol;
+        }
         outlet_list(x->x_mainout, 0, n2, outvec);
     }
     else if(nfield)
@@ -1792,9 +1970,13 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
         if(!tosym)
         {
             if(outvec[0].a_type != A_SYMBOL)
+            {
                 bug("text sequence 2");
+            }
             else
+            {
                 tosym = outvec[0].a_w.w_symbol;
+            }
             vecleft++;
             nleft--;
         }
@@ -1807,9 +1989,13 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
         if(to)
         {
             if(nleft > 0 && vecleft[0].a_type == A_SYMBOL)
+            {
                 typedmess(to, vecleft->a_w.w_symbol, nleft - 1, vecleft + 1);
+            }
             else
+            {
                 pd_list(to, 0, nleft, vecleft);
+            }
         }
     }
     ATOMS_FREEA(outvec, nfield + 1);
@@ -1822,9 +2008,13 @@ static void text_sequence_list(
     while(x->x_loop)
     {
         if(argc)
+        {
             text_sequence_doit(x, argc, argv);
+        }
         else
+        {
             text_sequence_doit(x, x->x_argc, x->x_argv);
+        }
     }
 }
 
@@ -1917,30 +2107,52 @@ static void text_sequence_free(t_text_sequence *x)
 static void *text_new(t_symbol *s, int argc, t_atom *argv)
 {
     if(!argc || argv[0].a_type != A_SYMBOL)
+    {
         pd_this->pd_newest = text_define_new(s, argc, argv);
+    }
     else
     {
         const char *str = argv[0].a_w.w_symbol->s_name;
         if(!strcmp(str, "d") || !strcmp(str, "define"))
+        {
             pd_this->pd_newest = text_define_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "get"))
+        {
             pd_this->pd_newest = text_get_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "set"))
+        {
             pd_this->pd_newest = text_set_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "insert"))
+        {
             pd_this->pd_newest = text_insert_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "delete"))
+        {
             pd_this->pd_newest = text_delete_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "size"))
+        {
             pd_this->pd_newest = text_size_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "tolist"))
+        {
             pd_this->pd_newest = text_tolist_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "fromlist"))
+        {
             pd_this->pd_newest = text_fromlist_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "search"))
+        {
             pd_this->pd_newest = text_search_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "sequence"))
+        {
             pd_this->pd_newest = text_sequence_new(s, argc - 1, argv + 1);
+        }
         else
         {
             pd_error(0, "list %s: unknown function", str);
@@ -2055,7 +2267,9 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
         if(!target)
         {
             if(ap->a_type != A_SYMBOL)
+            {
                 continue;
+            }
             else if(!(target = ap->a_w.w_symbol->s_thing))
             {
                 pd_error(
@@ -2076,9 +2290,13 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
         if(!drop)
         {
             if(ap->a_type == A_FLOAT)
+            {
                 typedmess(target, &s_list, count, ap);
+            }
             else if(ap->a_type == A_SYMBOL)
+            {
                 typedmess(target, ap->a_w.w_symbol, count - 1, ap + 1);
+            }
         }
         if(x->x_rewound)
         {
@@ -2150,9 +2368,13 @@ static void qlist_read(t_qlist *x, t_symbol *filename, t_symbol *format)
 {
     int cr = 0;
     if(!strcmp(format->s_name, "cr"))
+    {
         cr = 1;
+    }
     else if(*format->s_name)
+    {
         pd_error(x, "qlist_read: unknown flag: %s", format->s_name);
+    }
 
     if(binbuf_read_via_canvas(x->x_binbuf, filename->s_name, x->x_canvas, cr))
         pd_error(x, "%s: read failed", filename->s_name);
@@ -2166,9 +2388,13 @@ static void qlist_write(t_qlist *x, t_symbol *filename, t_symbol *format)
     char buf[MAXPDSTRING];
     canvas_makefilename(x->x_canvas, filename->s_name, buf, MAXPDSTRING);
     if(!strcmp(format->s_name, "cr"))
+    {
         cr = 1;
+    }
     else if(*format->s_name)
+    {
         pd_error(x, "qlist_read: unknown flag: %s", format->s_name);
+    }
     if(binbuf_write(x->x_binbuf, buf, "", cr))
         pd_error(x, "%s: write failed", filename->s_name);
 }
@@ -2183,9 +2409,13 @@ static void qlist_tempo(t_qlist *x, t_float f)
 {
     t_float newtempo;
     if(f < 1e-20)
+    {
         f = 1e-20;
+    }
     else if(f > 1e20)
+    {
         f = 1e20;
+    }
     newtempo = 1. / f;
     if(x->x_whenclockset != 0)
     {
@@ -2246,10 +2476,14 @@ static void textfile_bang(t_qlist *x)
     {
         x->x_onset = onset2;
         if(ap->a_type == A_SYMBOL)
+        {
             outlet_anything(x->x_ob.ob_outlet, ap->a_w.w_symbol,
                 onset2 - onset - 1, ap + 1);
+        }
         else
+        {
             outlet_list(x->x_ob.ob_outlet, 0, onset2 - onset, ap);
+        }
     }
     else
     {
@@ -2452,9 +2686,13 @@ t_binbuf *text_getbufbyname(t_symbol *s)
 {
     t_text_define *y = (t_text_define *) pd_findbyclass(s, text_define_class);
     if(y)
+    {
         return (y->x_textbuf.b_binbuf);
+    }
     else
+    {
         return (0);
+    }
 }
 
 /* notify text object that binbuf was modified */

@@ -63,9 +63,13 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     x->i_owner = owner;
     x->i_dest = dest;
     if(s1 == &s_signal)
+    {
         x->i_un.iu_floatsignalvalue = 0;
+    }
     else
+    {
         x->i_symto = s2;
+    }
     x->i_symfrom = s1;
     x->i_next = 0;
     if((y = owner->ob_inlet))
@@ -99,23 +103,37 @@ extern t_class *vinlet_class;
 static void inlet_bang(t_inlet *x)
 {
     if(x->i_symfrom == &s_bang)
+    {
         pd_vmess(x->i_dest, x->i_symto, "");
+    }
     else if(!x->i_symfrom)
+    {
         pd_bang(x->i_dest);
+    }
     else if(x->i_symfrom == &s_list)
+    {
         inlet_list(x, &s_bang, 0, 0);
+    }
     else if(x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+    {
         vmess(x->i_dest, gensym("fwd"), "s", &s_bang);
+    }
     else
+    {
         inlet_wrong(x, &s_bang);
+    }
 }
 
 static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
     if(x->i_symfrom == &s_pointer)
+    {
         pd_vmess(x->i_dest, x->i_symto, "p", gp);
+    }
     else if(!x->i_symfrom)
+    {
         pd_pointer(x->i_dest, gp);
+    }
     else if(x->i_symfrom == &s_list)
     {
         t_atom a;
@@ -129,11 +147,17 @@ static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 static void inlet_float(t_inlet *x, t_float f)
 {
     if(x->i_symfrom == &s_float)
+    {
         pd_vmess(x->i_dest, x->i_symto, "f", (t_floatarg) f);
+    }
     else if(x->i_symfrom == &s_signal)
+    {
         x->i_un.iu_floatsignalvalue = f;
+    }
     else if(!x->i_symfrom)
+    {
         pd_float(x->i_dest, f);
+    }
     else if(x->i_symfrom == &s_list)
     {
         t_atom a;
@@ -147,9 +171,13 @@ static void inlet_float(t_inlet *x, t_float f)
 static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
     if(x->i_symfrom == &s_symbol)
+    {
         pd_vmess(x->i_dest, x->i_symto, "s", s);
+    }
     else if(!x->i_symfrom)
+    {
         pd_symbol(x->i_dest, s);
+    }
     else if(x->i_symfrom == &s_list)
     {
         t_atom a;
@@ -157,9 +185,13 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
         inlet_list(x, &s_symbol, 1, &a);
     }
     else if(x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+    {
         vmess(x->i_dest, gensym("fwd"), "ss", &s_symbol, s);
+    }
     else
+    {
         inlet_wrong(x, &s_symbol);
+    }
 }
 
 /* forward a message to an inlet~ object */
@@ -178,31 +210,53 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     t_atom at;
     if(x->i_symfrom == &s_list || x->i_symfrom == &s_float ||
         x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
+    {
         typedmess(x->i_dest, x->i_symto, argc, argv);
+    }
     else if(!x->i_symfrom)
+    {
         pd_list(x->i_dest, s, argc, argv);
+    }
     else if(!argc)
+    {
         inlet_bang(x);
+    }
     else if(argc == 1 && argv->a_type == A_FLOAT)
+    {
         inlet_float(x, atom_getfloat(argv));
+    }
     else if(argc == 1 && argv->a_type == A_SYMBOL)
+    {
         inlet_symbol(x, atom_getsymbol(argv));
+    }
     else if(x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+    {
         inlet_fwd(x, &s_list, argc, argv);
+    }
     else
+    {
         post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
+    }
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     if(x->i_symfrom == s)
+    {
         typedmess(x->i_dest, x->i_symto, argc, argv);
+    }
     else if(!x->i_symfrom)
+    {
         typedmess(x->i_dest, s, argc, argv);
+    }
     else if(x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+    {
         inlet_fwd(x, s, argc, argv);
+    }
     else
+    {
         inlet_wrong(x, s);
+    }
 }
 
 void inlet_free(t_inlet *x)
@@ -210,14 +264,20 @@ void inlet_free(t_inlet *x)
     t_object *y = x->i_owner;
     t_inlet *x2;
     if(y->ob_inlet == x)
+    {
         y->ob_inlet = x->i_next;
+    }
     else
+    {
         for(x2 = y->ob_inlet; x2; x2 = x2->i_next)
+        {
             if(x2->i_next == x)
             {
                 x2->i_next = x->i_next;
                 break;
             }
+        }
+    }
     t_freebytes(x, sizeof(*x));
 }
 
@@ -320,18 +380,30 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     for(count = argc - 1, ap = argv + 1; ip && count--; ap++, ip = ip->i_next)
     {
         if(ap->a_type == A_POINTER)
+        {
             pd_pointer(&ip->i_pd, ap->a_w.w_gpointer);
+        }
         else if(ap->a_type == A_FLOAT)
+        {
             pd_float(&ip->i_pd, ap->a_w.w_float);
+        }
         else
+        {
             pd_symbol(&ip->i_pd, ap->a_w.w_symbol);
+        }
     }
     if(argv->a_type == A_POINTER)
+    {
         pd_pointer(&x->ob_pd, argv->a_w.w_gpointer);
+    }
     else if(argv->a_type == A_FLOAT)
+    {
         pd_float(&x->ob_pd, argv->a_w.w_float);
+    }
     else
+    {
         pd_symbol(&x->ob_pd, argv->a_w.w_symbol);
+    }
 }
 
 /* --------------------------- outlets ------------------------------ */
@@ -400,9 +472,13 @@ int sched_geteventno(void) { return (outlet_eventno); }
 static t_outconnect **outlet_getconnectionpointer(t_outlet *x)
 {
     if(x->o_connections && *(x->o_connections->oc_to) == backtracer_class)
+    {
         return (&((t_backtracer *) (x->o_connections->oc_to))->b_connections);
+    }
     else
+    {
         return (&x->o_connections);
+    }
 }
 
 static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
@@ -414,6 +490,7 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
     snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
     nchar = strlen(msgbuf);
     for(i = 0; i < nprint && nchar < 100; i++)
+    {
         if(nchar < 100)
         {
             char buf[100];
@@ -421,10 +498,15 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
             snprintf(msgbuf + nchar, 100 - nchar, " %s", buf);
             nchar = strlen(msgbuf);
         }
+    }
     if(argc > nprint && nchar < 100)
+    {
         sprintf(msgbuf + nchar, "...");
+    }
     else
+    {
         memcpy(msgbuf + 100, "...", 4); /* in case we didn't finish */
+    }
     logpost(who, 2, "%s", msgbuf);
 }
 
@@ -505,15 +587,21 @@ void glob_settracing(void *dummy, t_float f)
     if(f != 0)
     {
         if(backtracer_cantrace)
+        {
             post("pd: tracing already enabled");
+        }
         else
+        {
             canvas_settracing(1);
+        }
         backtracer_cantrace = 1;
     }
     else
     {
         if(!backtracer_cantrace)
+        {
             post("pd: tracing already disabled");
+        }
         else if(!backtrace_unsetclock)
         {
             backtrace_unsetclock =
@@ -593,10 +681,14 @@ void outlet_bang(t_outlet *x)
 {
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
+    {
         for(oc = x->o_connections; oc; oc = oc->oc_next)
             pd_bang(oc->oc_to);
+    }
     --stackcount;
 }
 
@@ -605,7 +697,9 @@ void outlet_pointer(t_outlet *x, t_gpointer *gp)
     t_outconnect *oc;
     t_gpointer gpointer;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
     {
         gpointer = *gp;
@@ -619,10 +713,14 @@ void outlet_float(t_outlet *x, t_float f)
 {
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
+    {
         for(oc = x->o_connections; oc; oc = oc->oc_next)
             pd_float(oc->oc_to, f);
+    }
     --stackcount;
 }
 
@@ -630,10 +728,14 @@ void outlet_symbol(t_outlet *x, t_symbol *s)
 {
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
+    {
         for(oc = x->o_connections; oc; oc = oc->oc_next)
             pd_symbol(oc->oc_to, s);
+    }
     --stackcount;
 }
 
@@ -641,10 +743,14 @@ void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
+    {
         for(oc = x->o_connections; oc; oc = oc->oc_next)
             pd_list(oc->oc_to, s, argc, argv);
+    }
     --stackcount;
 }
 
@@ -652,10 +758,14 @@ void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
+    {
         outlet_stackerror(x);
+    }
     else
+    {
         for(oc = x->o_connections; oc; oc = oc->oc_next)
             typedmess(oc->oc_to, s, argc, argv);
+    }
     --stackcount;
 }
 
@@ -822,9 +932,13 @@ t_outconnect *obj_starttraverseoutlet(
         o = o->o_next;
     *op = o;
     if(o)
+    {
         return (*outlet_getconnectionpointer(o));
+    }
     else
+    {
         return (0);
+    }
 }
 
 t_outconnect *obj_nexttraverseoutlet(
@@ -858,9 +972,13 @@ it, correctly typed, or zero if the check failed. */
 t_object *pd_checkobject(t_pd *x)
 {
     if((*x)->c_patchable)
+    {
         return ((t_object *) x);
+    }
     else
+    {
         return (0);
+    }
 }
 
 /* move an inlet or outlet to the head of the list */
@@ -868,9 +986,13 @@ void obj_moveinletfirst(t_object *x, t_inlet *i)
 {
     t_inlet *i2;
     if(x->ob_inlet == i)
+    {
         return;
+    }
     else
+    {
         for(i2 = x->ob_inlet; i2; i2 = i2->i_next)
+        {
             if(i2->i_next == i)
             {
                 i2->i_next = i->i_next;
@@ -878,15 +1000,21 @@ void obj_moveinletfirst(t_object *x, t_inlet *i)
                 x->ob_inlet = i;
                 return;
             }
+        }
+    }
 }
 
 void obj_moveoutletfirst(t_object *x, t_outlet *o)
 {
     t_outlet *o2;
     if(x->ob_outlet == o)
+    {
         return;
+    }
     else
+    {
         for(o2 = x->ob_outlet; o2; o2 = o2->o_next)
+        {
             if(o2->o_next == o)
             {
                 o2->o_next = o->o_next;
@@ -894,6 +1022,8 @@ void obj_moveoutletfirst(t_object *x, t_outlet *o)
                 x->ob_outlet = o;
                 return;
             }
+        }
+    }
 }
 
 /* routines for DSP sorting, which are used in d_ugen.c and g_canvas.c */
@@ -920,11 +1050,13 @@ int obj_siginletindex(const t_object *x, int m)
         if(x->ob_pd->c_floatsignalin) n++;
     }
     for(i = x->ob_inlet; i; i = i->i_next, m--)
+    {
         if(i->i_symfrom == &s_signal)
         {
             if(m == 0) return (n);
             n++;
         }
+    }
     return (-1);
 }
 
@@ -934,9 +1066,13 @@ int obj_issignalinlet(const t_object *x, int m)
     if(x->ob_pd->c_firstin)
     {
         if(!m)
+        {
             return (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin);
+        }
         else
+        {
             m--;
+        }
     }
     for(i = x->ob_inlet; i && m; i = i->i_next, m--)
         ;
@@ -957,11 +1093,13 @@ int obj_sigoutletindex(const t_object *x, int m)
     int n;
     t_outlet *o2;
     for(o2 = x->ob_outlet, n = 0; o2; o2 = o2->o_next, m--)
+    {
         if(o2->o_sym == &s_signal)
         {
             if(m == 0) return (n);
             n++;
         }
+    }
     return (-1);
 }
 
@@ -980,15 +1118,19 @@ t_float *obj_findsignalscalar(const t_object *x, int m)
     if(x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if(!m--)
+        {
             return (x->ob_pd->c_floatsignalin > 0
                         ? (t_float *) (((char *) x) + x->ob_pd->c_floatsignalin)
                         : 0);
+        }
     }
     for(i = x->ob_inlet; i; i = i->i_next)
+    {
         if(i->i_symfrom == &s_signal)
         {
             if(m-- == 0) return (&i->i_un.iu_floatsignalvalue);
         }
+    }
     return (0);
 }
 
@@ -1027,9 +1169,13 @@ void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
     for(i = x->ob_inlet; i && n; i = i->i_next, n--)
         ;
     if(i)
+    {
         typedmess(&i->i_pd, s, argc, argv);
+    }
     else
+    {
         bug("obj_sendinlet");
+    }
 }
 
 /* ------------------- setup routine, somewhat misnamed */

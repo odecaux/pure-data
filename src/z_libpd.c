@@ -24,7 +24,6 @@
 #include "x_libpdreceive.h"
 #include "z_hooks.h"
 
-
 #if PD_MINOR_VERSION < 46
 #define HAVE_SCHED_TICK_ARG
 #endif
@@ -39,7 +38,6 @@
 void pd_init(void);
 int sys_startgui(const char *libdir);
 void sys_stopgui(void);
-
 
 // (optional) setup functions for built-in "extra" externals
 #ifdef LIBPD_EXTRA

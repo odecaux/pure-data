@@ -4,7 +4,6 @@
 #include "g_canvas.h"
 #include "g_undo.h"
 
-
 #if 0
 #define DEBUG_UNDO(x) startpost("[%s:%d] ", __FILE__, __LINE__), x
 #else
@@ -102,8 +101,10 @@ int canvas_undo_objectstate(t_canvas *cnv, void *z, int action)
             bbuf = buf->u_redo; /* falls through */
         case UNDO_UNDO:
             if(x)
+            {
                 pd_typedmess(x, buf->u_symbol, binbuf_getnatom(bbuf),
                     binbuf_getvec(bbuf));
+            }
             break;
     }
     return 1;
@@ -132,9 +133,11 @@ void canvas_undo_cleardirty(t_canvas *x)
     t_gobj *y;
     canvas_undo_docleardirty(x);
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if(pd_class(&y->g_pd) == canvas_class &&
             !canvas_isabstraction((t_canvas *) y))
             canvas_undo_cleardirty((t_canvas *) y);
+    }
 }
 
 static int canvas_undo_doisdirty(t_canvas *x)
@@ -145,9 +148,11 @@ static int canvas_undo_doisdirty(t_canvas *x)
     if(udo->u_last != udo->u_cleanstate) return 1;
 
     for(y = x->gl_list; y; y = y->g_next)
+    {
         if(pd_class(&y->g_pd) == canvas_class &&
             !canvas_isabstraction((t_canvas *) y))
             if(canvas_undo_doisdirty((t_canvas *) y)) return 1;
+    }
     return 0;
 }
 
@@ -315,9 +320,13 @@ void canvas_undo_undo(t_canvas *x)
                 if(sequence_depth < 1) break;
             }
             if(sequence_depth < 0)
+            {
                 bug("undo sequence missing end");
+            }
             else if(sequence_depth > 0)
+            {
                 bug("undo sequence missing start");
+            }
         }
 
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
@@ -377,9 +386,13 @@ void canvas_undo_redo(t_canvas *x)
                 if(sequence_depth < 1) break;
             }
             if(sequence_depth < 0)
+            {
                 bug("undo sequence end without start");
+            }
             else if(sequence_depth > 0)
+            {
                 bug("undo sequence start without end");
+            }
         }
 
         canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);

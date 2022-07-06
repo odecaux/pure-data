@@ -269,50 +269,53 @@ int socket_connect(
         if(socket_errno() != WSAEWOULDBLOCK)
 #else
         if(socket_errno() != EINPROGRESS)
+        {
 #endif
             return -1; /* break on "real" error */
+    }
 
-        /* block with select using timeout */
-        if(timeout < 0) timeout = 0;
-        timeoutval.tv_sec = (int) timeout;
-        timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
-        FD_ZERO(&writefds);
-        FD_SET(socket, &writefds); /* socket is connected when writable */
-        FD_ZERO(&errfds);
-        FD_SET(socket, &errfds); /* catch exceptions */
+    /* block with select using timeout */
+    if(timeout < 0) timeout = 0;
+    timeoutval.tv_sec = (int) timeout;
+    timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
+    FD_ZERO(&writefds);
+    FD_SET(socket, &writefds); /* socket is connected when writable */
+    FD_ZERO(&errfds);
+    FD_SET(socket, &errfds); /* catch exceptions */
 
-        status = select(socket + 1, NULL, &writefds, &errfds, &timeoutval);
-        if(status < 0) /* select failed */
-        {
-            fprintf(stderr, "socket_connect: select failed");
-            return -1;
-        }
-        else if(status == 0) /* connection timed out */
-        {
+    status = select(socket + 1, NULL, &writefds, &errfds, &timeoutval);
+    if(status < 0) /* select failed */
+    {
+        fprintf(stderr, "socket_connect: select failed");
+        return -1;
+    }
+    else if(status == 0) /* connection timed out */
+    {
 #ifdef _WIN32
-            WSASetLastError(WSAETIMEDOUT);
+        WSASetLastError(WSAETIMEDOUT);
 #else
             errno = ETIMEDOUT;
 #endif
-            return -1;
-        }
+        return -1;
+    }
 
-        if(FD_ISSET(socket, &errfds)) /* connection failed */
-        {
-            int err;
-            socklen_t len = sizeof(err);
-            getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *) &err, &len);
+    if(FD_ISSET(socket, &errfds)) /* connection failed */
+    {
+        int err;
+        socklen_t len = sizeof(err);
+        getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *) &err, &len);
 #ifdef _WIN32
-            WSASetLastError(err);
+        WSASetLastError(err);
 #else
             errno = err;
 #endif
-            return -1;
-        }
+        return -1;
     }
-    /* done, set blocking again */
-    socket_set_nonblocking(socket, 0);
-    return 0;
+}
+
+/* done, set blocking again */
+socket_set_nonblocking(socket, 0);
+return 0;
 }
 
 void socket_close(int socket)
@@ -359,9 +362,13 @@ int socket_set_nonblocking(int socket, int nonblocking)
 #else
     int sockflags = fcntl(socket, F_GETFL, 0);
     if(nonblocking)
+    {
         sockflags |= O_NONBLOCK;
+    }
     else
+    {
         sockflags &= ~O_NONBLOCK;
+    }
     if(fcntl(socket, F_SETFL, sockflags) < 0) return -1;
 #endif
     return 0;
