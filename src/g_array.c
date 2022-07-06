@@ -616,7 +616,6 @@ static void array_getrect(
     int yonset;
     int wonset;
     int xonset;
-    int i;
 
     if(!array_getfields(array->a_templatesym, &elemtemplatecanvas,
            &elemtemplate, &elemsize, 0, 0, 0, &xonset, &yonset, &wonset))
@@ -631,7 +630,7 @@ static void array_getrect(
         {
             incr = array->a_n / 300;
         }
-        for(i = 0; i < array->a_n; i += incr)
+        for(int i = 0; i < array->a_n; i += incr)
         {
             t_float pxpix;
             t_float pypix;
@@ -715,10 +714,9 @@ void garray_savecontentsto(t_garray *x, t_binbuf *b)
         while(n2 < n)
         {
             int chunk = n - n2;
-            int i;
             if(chunk > ARRAYWRITECHUNKSIZE) chunk = ARRAYWRITECHUNKSIZE;
             binbuf_addv(b, "si", gensym("#A"), n2);
-            for(i = 0; i < chunk; i++)
+            for(int i = 0; i < chunk; i++)
             {
                 binbuf_addv(
                     b, "f", ((t_word *) (array->a_vec))[n2 + i].w_float);
@@ -898,7 +896,7 @@ static void garray_const(t_garray *x, t_floatarg g)
     }
     else
     {
-        for(i = 0; i < array->a_n; i++)
+        for(int i = 0; i < array->a_n; i++)
             *((t_float *) ((char *) array->a_vec + elemsize * i) + yonset) = g;
     }
     garray_redraw(x);
@@ -910,10 +908,7 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval, int nsin,
 {
     double phase;
     double phaseincr;
-    double fj;
     int yonset;
-    int i;
-    int j;
     int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
@@ -930,9 +925,11 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval, int nsin,
     }
     garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;
-    for(i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
+    for(int i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
     {
         double sum = dcval;
+        int j;
+        double fj;
         if(sineflag)
         {
             for(j = 0, fj = phase; j < nsin; j++, fj += phase)
@@ -952,7 +949,6 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_float *svec;
     long npoints;
-    int i;
     if(argc < 2)
     {
         pd_error(0, "sinesum: %s: need number of points and partial strengths",
@@ -966,7 +962,7 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     svec = (t_float *) t_getbytes(sizeof(t_float) * argc);
     if(!svec) return;
 
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         svec[i] = atom_getfloatarg(i, argc, argv);
     garray_dofo(x, npoints, 0, argc, svec, 1);
     t_freebytes(svec, sizeof(t_float) * argc);
@@ -976,7 +972,6 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_float *svec;
     long npoints;
-    int i;
     if(argc < 2)
     {
         pd_error(0, "sinesum: %s: need number of points and partial strengths",
@@ -990,7 +985,7 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     svec = (t_float *) t_getbytes(sizeof(t_float) * argc);
     if(!svec) return;
 
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         svec[i] = atom_getfloatarg(i, argc, argv);
     garray_dofo(x, npoints, 0, argc, svec, 0);
     t_freebytes(svec, sizeof(t_float) * argc);
@@ -998,7 +993,6 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
 static void garray_normalize(t_garray *x, t_float f)
 {
-    int i;
     double maxv;
     double renormer;
     int yonset;
@@ -1013,7 +1007,7 @@ static void garray_normalize(t_garray *x, t_float f)
 
     if(f <= 0) f = 1;
 
-    for(i = 0, maxv = 0; i < array->a_n; i++)
+    for(int i = 0, maxv = 0; i < array->a_n; i++)
     {
         double v = *((t_float *) (array->a_vec + elemsize * i) + yonset);
         if(v > maxv) maxv = v;
@@ -1022,7 +1016,7 @@ static void garray_normalize(t_garray *x, t_float f)
     if(maxv > 0)
     {
         renormer = f / maxv;
-        for(i = 0; i < array->a_n; i++)
+        for(int i = 0; i < array->a_n; i++)
             *((t_float *) (array->a_vec + elemsize * i) + yonset) *= renormer;
     }
     garray_redraw(x);
@@ -1032,7 +1026,6 @@ static void garray_normalize(t_garray *x, t_float f)
 the "y" slot of the array.  This generalizes Max's "table", sort of. */
 static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     int yonset;
     int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -1064,7 +1057,7 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
             argc = array->a_n - firstindex;
             if(argc <= 0) return;
         }
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
         {
             *((t_float *) (array->a_vec + elemsize * (i + firstindex)) +
                 yonset) = atom_getfloat(argv + i);
@@ -1216,7 +1209,6 @@ static void garray_read(t_garray *x, t_symbol *filename)
 {
     int nelem;
     int filedesc;
-    int i;
     FILE *fd;
     char buf[MAXPDSTRING];
     char *bufptr;
@@ -1237,20 +1229,22 @@ static void garray_read(t_garray *x, t_symbol *filename)
         pd_error(0, "%s: can't open", filename->s_name);
         return;
     }
-    for(i = 0; i < nelem; i++)
+    for(int i = 0; i < nelem; i++)
     {
         double f;
         if(!fscanf(fd, "%lf", &f))
         {
             post("%s: read %d elements into table of size %d", filename->s_name,
                 i, nelem);
+            while(i < nelem)
+            {
+                *((t_float *) (array->a_vec + elemsize * i) + yonset) = 0;
+                i++;
+            }        
             break;
         }
-        else
-            *((t_float *) (array->a_vec + elemsize * i) + yonset) = f;
+        *((t_float *) (array->a_vec + elemsize * i) + yonset) = f;
     }
-    while(i < nelem)
-        *((t_float *) (array->a_vec + elemsize * i) + yonset) = 0, i++;
     fclose(fd);
     garray_redraw(x);
 }
@@ -1261,7 +1255,6 @@ static void garray_write(t_garray *x, t_symbol *filename)
     char buf[MAXPDSTRING];
     int yonset;
     int elemsize;
-    int i;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {
@@ -1276,7 +1269,7 @@ static void garray_write(t_garray *x, t_symbol *filename)
         pd_error(0, "%s: can't create", buf);
         return;
     }
-    for(i = 0; i < array->a_n; i++)
+    for(int i = 0; i < array->a_n; i++)
     {
         if(fprintf(fd, "%g\n",
                *(t_float *) (((array->a_vec + sizeof(t_word) * i)) + yonset)) <

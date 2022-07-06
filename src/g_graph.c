@@ -540,7 +540,6 @@ static void graph_yticks(
 
 static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     if(argc < 1)
     {
         pd_error(0, "graph_xlabel: no y value given");
@@ -553,7 +552,7 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
         x->gl_xlabel = (t_symbol **) t_resizebytes(x->gl_xlabel,
             x->gl_nxlabels * sizeof(t_symbol *), argc * sizeof(t_symbol *));
         x->gl_nxlabels = argc;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
             x->gl_xlabel[i] = atom_gensym(&argv[i]);
     }
     glist_redraw(x);
@@ -561,7 +560,6 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 
 static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     if(argc < 1)
     {
         pd_error(0, "graph_ylabel: no x value given");
@@ -574,7 +572,7 @@ static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
         x->gl_ylabel = (t_symbol **) t_resizebytes(x->gl_ylabel,
             x->gl_nylabels * sizeof(t_symbol *), argc * sizeof(t_symbol *));
         x->gl_nylabels = argc;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
             x->gl_ylabel[i] = atom_gensym(&argv[i]);
     }
     glist_redraw(x);
@@ -965,7 +963,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             }
         }
         /* draw x labels */
-        for(i = 0; i < x->gl_nxlabels; i++)
+        for(int i = 0; i < x->gl_nxlabels; i++)
         {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",
@@ -977,7 +975,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         }
 
         /* draw y labels */
-        for(i = 0; i < x->gl_nylabels; i++)
+        for(int i = 0; i < x->gl_nylabels; i++)
         {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",

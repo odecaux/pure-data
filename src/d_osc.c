@@ -203,14 +203,14 @@ static void cos_dsp(t_cos *x, t_signal **sp)
 
 static void cos_maketable(void)
 {
-    int i;
-    float *fp;
     float phase;
     float phsinc = (2. * 3.14159) / COSTABSIZE;
     union tabfudge tf;
 
     if(cos_table) return;
     cos_table = (float *) getbytes(sizeof(float) * (COSTABSIZE + 1));
+    int i;
+    float *fp;
     for(i = COSTABSIZE + 1, fp = cos_table, phase = 0; i--;
         fp++, phase += phsinc)
         *fp = cos(phase);
@@ -391,7 +391,6 @@ static t_int *sigvcf_perform(t_int *w)
     t_sample *out2 = (t_sample *) (w[4]);
     t_vcfctl *c = (t_vcfctl *) (w[5]);
     int n = (int) w[6];
-    int i;
     t_float re = c->c_re;
     t_float re2;
     t_float im = c->c_im;
@@ -414,7 +413,7 @@ static t_int *sigvcf_perform(t_int *w)
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         float cf;
         float cfindx;

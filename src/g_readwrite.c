@@ -146,7 +146,6 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec, int *p_nextmsg,
 {
     int message;
     int n;
-    int i;
 
     t_template *template = template_findbyname(templatesym);
     if(!template)
@@ -157,7 +156,7 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec, int *p_nextmsg,
     }
     word_restore(w, template, argc, argv);
     n = template->t_n;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(template->t_vec[i].ds_type == DT_ARRAY)
         {
@@ -450,8 +449,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
                     template_findbyname(((t_scalar *) newone)->sc_template)))
     {
         /* swap new one with old one; then delete new one */
-        int i;
-        for(i = 0; i < template->t_n; i++)
+        for(int i = 0; i < template->t_n; i++)
         {
             t_word w = ((t_scalar *) newone)->sc_vec[i];
             ((t_scalar *) newone)->sc_vec[i] = ((t_scalar *) oldone)->sc_vec[i];
@@ -493,9 +491,8 @@ void canvas_doaddtemplate(
     t_symbol *templatesym, int *p_ntemplates, t_symbol ***p_templatevec)
 {
     int n = *p_ntemplates;
-    int i;
     t_symbol **templatevec = *p_templatevec;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         if(templatevec[i] == templatesym) return;
     templatevec = (t_symbol **) t_resizebytes(
         templatevec, n * sizeof(*templatevec), (n + 1) * sizeof(*templatevec));
@@ -524,7 +521,7 @@ void canvas_writescalar(
     }
     if(!template) bug("canvas_writescalar");
     /* write the atoms (floats and symbols) */
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(template->t_vec[i].ds_type == DT_FLOAT ||
             template->t_vec[i].ds_type == DT_SYMBOL)
@@ -547,7 +544,7 @@ void canvas_writescalar(
     binbuf_add(b, natom, a);
     binbuf_addsemi(b);
     t_freebytes(a, natom * sizeof(*a));
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(template->t_vec[i].ds_type == DT_ARRAY)
         {
@@ -636,7 +633,6 @@ static void canvas_addtemplatesforlist(
 /* write all "scalars" in a glist to a binbuf. */
 t_binbuf *glist_writetobinbuf(t_glist *x, int wholething)
 {
-    int i;
     t_symbol **templatevec = getbytes(0);
     int ntemplates = 0;
     t_gobj *y;
@@ -652,7 +648,7 @@ t_binbuf *glist_writetobinbuf(t_glist *x, int wholething)
         }
     }
     binbuf_addv(b, "s;", gensym("data"));
-    for(i = 0; i < ntemplates; i++)
+    for(int i = 0; i < ntemplates; i++)
     {
         t_template *template = template_findbyname(templatevec[i]);
         int j;
@@ -835,10 +831,9 @@ static void canvas_collecttemplatesfor(
 static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
 {
     t_symbol **templatevec = getbytes(0);
-    int i;
     int ntemplates = 0;
     canvas_collecttemplatesfor(x, &ntemplates, &templatevec, wholething);
-    for(i = 0; i < ntemplates; i++)
+    for(int i = 0; i < ntemplates; i++)
     {
         t_template *template = template_findbyname(templatevec[i]);
         int j;

@@ -303,7 +303,7 @@ static int triggerize_fanout(t_glist *x, t_object *obj)
             binbuf_clear(b);
             binbuf_addv(b, "ssiis", gensym("#X"), gensym("obj"), posX, posY,
                 gensym("t"));
-            for(i = 0; i < count; i++)
+            for(int i = 0; i < count; i++)
             {
                 binbuf_addv(b, "s", gensym("a"));
             }

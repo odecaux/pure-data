@@ -233,10 +233,9 @@ t_binbuf *pointertobinbuf(
 
 void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 {
-    int i;
     int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
-    for(i = 0; i < nitems; i++, datatypes++, wp++)
+    for(int i = 0; i < nitems; i++, datatypes++, wp++)
     {
         int type = datatypes->ds_type;
         if(type == DT_FLOAT)
@@ -260,10 +259,9 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 
 void word_restore(t_word *wp, t_template *template, int argc, t_atom *argv)
 {
-    int i;
     int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
-    for(i = 0; i < nitems; i++, datatypes++, wp++)
+    for(int i = 0; i < nitems; i++, datatypes++, wp++)
     {
         int type = datatypes->ds_type;
         if(type == DT_FLOAT)
@@ -313,12 +311,11 @@ void word_free(t_word *wp, t_template *template)
 
 static int template_cancreate(t_template *template)
 {
-    int i;
     int type;
     int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
     t_template *elemtemplate;
-    for(i = 0; i < nitems; i++, datatypes++)
+    for(int i = 0; i < nitems; i++, datatypes++)
     {
         if(datatypes->ds_type == DT_ARRAY &&
             (!(elemtemplate =

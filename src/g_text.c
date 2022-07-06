@@ -677,9 +677,9 @@ static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
     {
         t_atom *av = binbuf_getvec(x->a_text.te_binbuf);
         int ac = binbuf_getnatom(x->a_text.te_binbuf);
-        int i;
         if(ac == argc)
         {
+            int i;
             for(i = 0; i < argc; i++)
             {
                 if((argv[i].a_type != av[i].a_type) ||
@@ -689,20 +689,21 @@ static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
                         argv[i].a_w.w_symbol != av[i].a_w.w_symbol))
                     break;
             }
-            if(i == argc) goto nochange;
+            if(i == argc) 
+                return ;
         }
         binbuf_clear(x->a_text.te_binbuf);
         binbuf_add(x->a_text.te_binbuf, argc, argv);
         av = binbuf_getvec(x->a_text.te_binbuf);
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
         {
             if(argv[i].a_type == A_POINTER)
                 SETSYMBOL(&argv[i], gensym("(pointer)"));
         }
         changed = 1;
     }
-    if(changed) gatom_senditup(x);
-nochange:;
+    if(changed) 
+        gatom_senditup(x);
 }
 
 static void gatom_bang(t_gatom *x)
@@ -747,9 +748,8 @@ static void gatom_bang(t_gatom *x)
     else /* list */
     {
         int argc = binbuf_getnatom(x->a_text.te_binbuf);
-        int i;
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
         {
             if(argv[i].a_type != A_FLOAT && argv[i].a_type != A_SYMBOL)
             {
@@ -835,7 +835,6 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     t_gatom *x = (t_gatom *) z;
     int c = f;
     int bufsize;
-    int i;
     char *buf;
     t_atom *ap = gatom_getatom(x);
 
@@ -856,10 +855,14 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
         {
             rtext_gettext(t, &buf, &bufsize);
             rtext_key(t, 0, gensym("End"));
+
+            int i;
             for(i = 0; i < 3; i++)
-                if(buf[bufsize - i - 1] != '.') break;
+                if(buf[bufsize - i - 1] != '.') 
+                    break;
             while(i--)
                 rtext_key(t, '\b', &s_);
+
             rtext_gettext(t, &buf, &bufsize);
             if(x->a_flavor == A_FLOAT)
             {
@@ -1550,13 +1553,12 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 {
     int n = obj_noutlets(ob);
     int nplus = (n == 1 ? 1 : n - 1);
-    int i;
     int width = x2 - x1;
     int iow = IOWIDTH * glist->gl_zoom;
     int ih = IHEIGHT * glist->gl_zoom;
     int oh = OHEIGHT * glist->gl_zoom;
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         int onset = x1 + (width - iow) * i / nplus;
         if(firsttime)
@@ -1575,7 +1577,7 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     }
     n = obj_ninlets(ob);
     nplus = (n == 1 ? 1 : n - 1);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         int onset = x1 + (width - iow) * i / nplus;
         if(firsttime)
@@ -1728,13 +1730,12 @@ void text_drawborder(t_text *x, t_glist *glist, const char *tag, int width2,
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
 {
-    int i;
     int n;
     n = obj_noutlets(ob);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         sys_vgui(".x%lx.c delete %so%d\n", glist_getcanvas(glist), tag, i);
     n = obj_ninlets(ob);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         sys_vgui(".x%lx.c delete %si%d\n", glist_getcanvas(glist), tag, i);
 }
 

@@ -411,10 +411,10 @@ escaped.  LATER also figure out about escaping white space */
 void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y)
 {
     t_binbuf *z = binbuf_new();
-    int i;
     int fixit;
-    t_atom *ap;
     binbuf_add(z, y->b_n, y->b_vec);
+    int i;
+    t_atom *ap;
     for(i = 0, ap = z->b_vec; i < z->b_n; i++, ap++)
     {
         char tbuf[MAXPDSTRING];
@@ -577,10 +577,9 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 
 void binbuf_print(const t_binbuf *x)
 {
-    int i;
     int startedpost = 0;
     int newline = 1;
-    for(i = 0; i < x->b_n; i++)
+    for(int i = 0; i < x->b_n; i++)
     {
         if(newline)
         {
@@ -791,9 +790,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         }
         else
         {
-            int i;
             int j = (target ? 0 : -1);
-            for(i = 0; i < ac; i++)
+            for(int i = 0; i < ac; i++)
             {
                 if(at[i].a_type == A_SEMI)
                 {
@@ -1052,8 +1050,7 @@ int binbuf_read(
     /* optionally map carriage return to semicolon */
     if(crflag)
     {
-        int i;
-        for(i = 0; i < length; i++)
+        for(int i = 0; i < length; i++)
             if(buf[i] == '\n') buf[i] = ';';
     }
     binbuf_text(b, buf, length);
@@ -1226,7 +1223,6 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
     t_int stack[MAXSTACK] = {0};
     t_int nobj = 0;
     t_int gotfontsize = 0;
-    int i;
     t_atom outmess[MAXSTACK];
     t_atom *nextmess;
     t_float fontsize = 10;
@@ -1259,7 +1255,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
             /* case 1: importing a ".pat" file into Pd. */
 
             /* dollar signs in file translate to symbols */
-            for(i = 0; i < natom; i++)
+            for(int i = 0; i < natom; i++)
             {
                 if(nextmess[i].a_type == A_DOLLAR)
                 {
@@ -1324,7 +1320,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     if(classname == gensym("trigger") ||
                         classname == gensym("t"))
                     {
-                        for(i = 7; i < natom; i++)
+                        for(int i = 7; i < natom; i++)
                         {
                             if(nextmess[i].a_type == A_SYMBOL &&
                                 nextmess[i].a_w.w_symbol == gensym("i"))
@@ -1338,7 +1334,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     outmess[2] = nextmess[2];
                     outmess[3] = nextmess[3];
                     SETSYMBOL(outmess + 4, classname);
-                    for(i = 7; i < natom; i++)
+                    for(int i = 7; i < natom; i++)
                         outmess[i - 2] = nextmess[i];
                     SETSEMI(outmess + natom - 2);
                     binbuf_add(newb, natom - 1, outmess);
@@ -1352,7 +1348,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                         gensym((strcmp(second, "message") ? "text" : "msg")));
                     outmess[2] = nextmess[2];
                     outmess[3] = nextmess[3];
-                    for(i = 6; i < natom; i++)
+                    for(int i = 6; i < natom; i++)
                         outmess[i - 2] = nextmess[i];
                     SETSEMI(outmess + natom - 2);
                     binbuf_add(newb, natom - 1, outmess);
@@ -1511,7 +1507,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     SETFLOAT(outmess + 4, 50. * (natom - 5));
                     SETFLOAT(outmess + 5, fontsize);
                     SETSYMBOL(outmess + 6, gensym("p"));
-                    for(i = 5; i < natom; i++)
+                    for(int i = 5; i < natom; i++)
                         outmess[i + 2] = nextmess[i];
                     SETSEMI(outmess + natom + 2);
                     binbuf_add(newb, natom + 3, outmess);
@@ -1612,7 +1608,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                         SETFLOAT(outmess + 4, 50. * (natom - 4));
                         SETFLOAT(outmess + 5, fontsize);
                         outmess[6] = nextmess[4];
-                        for(i = 5; i < natom; i++)
+                        for(int i = 5; i < natom; i++)
                         {
                             arg = atom_getsymbolarg(i, natom, nextmess);
                             if(arg == gensym("a"))
@@ -1655,7 +1651,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                         outmess[3] = nextmess[3];
                         SETFLOAT(outmess + 4, 50. * (natom - 4));
                         SETFLOAT(outmess + 5, fontsize);
-                        for(i = 4; i < natom; i++)
+                        for(int i = 4; i < natom; i++)
                             outmess[i + 2] = nextmess[i];
                         if(classname == gensym("osc~"))
                             SETSYMBOL(outmess + 6, gensym("cycle~"));
@@ -1674,7 +1670,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     outmess[3] = nextmess[3];
                     SETFLOAT(outmess + 4, 50. * (natom - 4));
                     SETFLOAT(outmess + 5, fontsize);
-                    for(i = 4; i < natom; i++)
+                    for(int i = 4; i < natom; i++)
                         outmess[i + 2] = nextmess[i];
                     SETSEMI(outmess + natom + 2);
                     binbuf_add(newb, natom + 3, outmess);
