@@ -50,7 +50,9 @@ static int mac_nmidioutdev;
 void sys_do_open_midi(
     int nmidiin, int *midiinvec, int nmidiout, int *midioutvec)
 {
-    int i = 0, j, devno;
+    int i = 0;
+    int j;
+    int devno;
     int n = 0;
     PmError err;
 
@@ -151,7 +153,9 @@ void sys_putmidibyte(int portno, int byte)
     /* try to parse the bytes into MIDI messages so they can
     fit into PortMidi buffers. */
     static int mess[4];
-    static int nbytes = 0, sysex = 0, i;
+    static int nbytes = 0;
+    static int sysex = 0;
+    static int i;
     if(byte > MIDI_SYSEXEND)
     {
         /* realtime */
@@ -266,7 +270,9 @@ void nd_sysex_inword(int midiindev, int status, int data1, int data2, int data3)
 
 void sys_poll_midi(void)
 {
-    int i, nmess, throttle = 100;
+    int i;
+    int nmess;
+    int throttle = 100;
     PmEvent buffer;
     for(i = 0; i < mac_nmidiindev; i++)
     {
@@ -335,7 +341,9 @@ overload:;
 void midi_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i, nindev = 0, noutdev = 0;
+    int i;
+    int nindev = 0;
+    int noutdev = 0;
     char utf8device[MAXPDSTRING];
     utf8device[0] = 0;
     for(i = 0; i < Pm_CountDevices(); i++)

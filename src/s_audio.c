@@ -180,7 +180,8 @@ called make_sane above */
 static void audio_compact_and_count_channels(
     int *ndev, int *devvec, int *chanvec, int *totalchans, int maxdev)
 {
-    int i, newndev;
+    int i;
+    int newndev;
     /* count total number of input and output channels */
     for(i = newndev = *totalchans = 0; i < *ndev; i++)
         if(chanvec[i] > 0)
@@ -233,8 +234,12 @@ dialog window.   */
 void sys_set_audio_settings(t_audiosettings *a)
 {
     int i;
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int indevs = 0;
+    int outdevs = 0;
+    int canmulti = 0;
+    int cancallback = 0;
     sys_get_audio_devs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, a->a_api);
 
@@ -315,7 +320,8 @@ void sys_close_audio(void)
 void sys_init_audio(void)
 {
     t_audiosettings as;
-    int totalinchans, totaloutchans;
+    int totalinchans;
+    int totaloutchans;
     sys_get_audio_settings(&as);
     audio_compact_and_count_channels(&as.a_nindev, as.a_indevvec,
         as.a_chindevvec, &totalinchans, MAXAUDIOINDEV);
@@ -328,7 +334,9 @@ void sys_init_audio(void)
 void sys_reopen_audio(void)
 {
     t_audiosettings as;
-    int outcome = 0, totalinchans, totaloutchans;
+    int outcome = 0;
+    int totalinchans;
+    int totaloutchans;
     sys_get_audio_settings(&as);
     /* fprintf(stderr, "audio in ndev %d, dev %d; out ndev %d, dev %d\n",
         as.a_nindev, as.a_indevvec[0], as.a_noutdev, as.a_outdevvec[0]); */
@@ -580,9 +588,14 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     char buf[MAXPDSTRING];
     t_audiosettings as;
     /* these are all the devices on your system: */
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
     char device[MAXPDSTRING];
-    int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
+    int nindevs = 0;
+    int noutdevs = 0;
+    int canmulti = 0;
+    int cancallback = 0;
+    int i;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
@@ -676,8 +689,13 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 
 void sys_listdevs(void)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i, canmulti = 0, cancallback = 0;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
+    int canmulti = 0;
+    int cancallback = 0;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
@@ -815,8 +833,13 @@ void sys_get_audio_apis(char *buf)
 
 int sys_audiodevnametonumber(int output, const char *name)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i, canmulti, cancallback;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
+    int canmulti;
+    int cancallback;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
@@ -856,8 +879,12 @@ int sys_audiodevnametonumber(int output, const char *name)
 
 void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, canmulti, cancallback;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int canmulti;
+    int cancallback;
     if(devno < 0)
     {
         *name = 0;

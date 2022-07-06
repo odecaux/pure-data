@@ -154,7 +154,8 @@ static void ptrobj_next(t_ptrobj *x) { ptrobj_vnext(x, 0); }
 
 static void ptrobj_delete(t_ptrobj *x)
 {
-    t_gobj *gobj, *old;
+    t_gobj *gobj;
+    t_gobj *old;
     t_gpointer *gp = &x->x_gp;
     t_gstub *gs = gp->gp_stub;
     t_glist *glist;
@@ -226,7 +227,9 @@ t_symbol *gpointer_gettemplatesym(const t_gpointer *gp);
 static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
 {
     t_symbol *templatesym;
-    int n, which, result;
+    int n;
+    int which;
+    int result;
     t_typedout *to;
     if(!gpointer_check(&x->x_gp, 1))
     {
@@ -401,8 +404,10 @@ typedef struct _get
 static void *get_new(t_symbol *why, int argc, t_atom *argv)
 {
     t_get *x = (t_get *) pd_new(get_class);
-    int varcount, i;
-    t_atom at, *varvec;
+    int varcount;
+    int i;
+    t_atom at;
+    t_atom *varvec;
     t_getvariable *sp;
 
     x->x_templatesym = template_getbindsym(atom_getsymbolarg(0, argc, argv));
@@ -441,7 +446,8 @@ static void get_set(t_get *x, t_symbol *templatesym, t_symbol *field)
 
 static void get_pointer(t_get *x, t_gpointer *gp)
 {
-    int nitems = x->x_nout, i;
+    int nitems = x->x_nout;
+    int i;
     t_symbol *templatesym;
     t_template *template;
     t_gstub *gs = gp->gp_stub;
@@ -475,7 +481,8 @@ static void get_pointer(t_get *x, t_gpointer *gp)
         vec = gp->gp_un.gp_scalar->sc_vec;
     for(i = nitems - 1, vp = x->x_variables + i; i >= 0; i--, vp--)
     {
-        int onset, type;
+        int onset;
+        int type;
         t_symbol *arraytype;
         if(template_find_field(template, vp->gv_sym, &onset, &type, &arraytype))
         {
@@ -532,9 +539,11 @@ typedef struct _set
 static void *set_new(t_symbol *why, int argc, t_atom *argv)
 {
     t_set *x = (t_set *) pd_new(set_class);
-    int i, varcount;
+    int i;
+    int varcount;
     t_setvariable *sp;
-    t_atom at, *varvec;
+    t_atom at;
+    t_atom *varvec;
     if(argc && (argv[0].a_type == A_SYMBOL) &&
         !strcmp(argv[0].a_w.w_symbol->s_name, "-symbol"))
     {
@@ -593,7 +602,8 @@ static void set_set(t_set *x, t_symbol *templatesym, t_symbol *field)
 
 static void set_bang(t_set *x)
 {
-    int nitems = x->x_nin, i;
+    int nitems = x->x_nin;
+    int i;
     t_symbol *templatesym;
     t_template *template;
     t_setvariable *vp;
@@ -716,14 +726,19 @@ static void elem_set(t_elem *x, t_symbol *templatesym, t_symbol *fieldsym)
 
 static void elem_float(t_elem *x, t_float f)
 {
-    int indx = f, nitems, onset;
-    t_symbol *templatesym, *fieldsym = x->x_fieldsym, *elemtemplatesym;
+    int indx = f;
+    int nitems;
+    int onset;
+    t_symbol *templatesym;
+    t_symbol *fieldsym = x->x_fieldsym;
+    t_symbol *elemtemplatesym;
     t_template *template;
     t_template *elemtemplate;
     t_gpointer *gparent = &x->x_gparent;
     t_word *w;
     t_array *array;
-    int elemsize, type;
+    int elemsize;
+    int type;
 
     if(!gpointer_check(gparent, 0))
     {
@@ -829,8 +844,12 @@ static void getsize_set(t_getsize *x, t_symbol *templatesym, t_symbol *fieldsym)
 
 static void getsize_pointer(t_getsize *x, t_gpointer *gp)
 {
-    int nitems, onset, type;
-    t_symbol *templatesym, *fieldsym = x->x_fieldsym, *elemtemplatesym;
+    int nitems;
+    int onset;
+    int type;
+    t_symbol *templatesym;
+    t_symbol *fieldsym = x->x_fieldsym;
+    t_symbol *elemtemplatesym;
     t_template *template;
     t_word *w;
     t_array *array;
@@ -918,8 +937,12 @@ static void setsize_set(t_setsize *x, t_symbol *templatesym, t_symbol *fieldsym)
 
 static void setsize_float(t_setsize *x, t_float f)
 {
-    int nitems, onset, type;
-    t_symbol *templatesym, *fieldsym = x->x_fieldsym, *elemtemplatesym;
+    int nitems;
+    int onset;
+    int type;
+    t_symbol *templatesym;
+    t_symbol *fieldsym = x->x_fieldsym;
+    t_symbol *elemtemplatesym;
     t_template *template;
     t_template *elemtemplate;
     t_word *w;
@@ -1081,8 +1104,10 @@ typedef struct _append
 static void *append_new(t_symbol *why, int argc, t_atom *argv)
 {
     t_append *x = (t_append *) pd_new(append_class);
-    int varcount, i;
-    t_atom at, *varvec;
+    int varcount;
+    int i;
+    t_atom at;
+    t_atom *varvec;
     t_appendvariable *sp;
 
     x->x_templatesym = template_getbindsym(atom_getsymbolarg(0, argc, argv));
@@ -1123,14 +1148,16 @@ static void append_set(t_append *x, t_symbol *templatesym, t_symbol *field)
 
 static void append_float(t_append *x, t_float f)
 {
-    int nitems = x->x_nin, i;
+    int nitems = x->x_nin;
+    int i;
     t_symbol *templatesym = x->x_templatesym;
     t_template *template;
     t_appendvariable *vp;
     t_gpointer *gp = &x->x_gp;
     t_gstub *gs = gp->gp_stub;
     t_word *vec;
-    t_scalar *sc, *oldsc;
+    t_scalar *sc;
+    t_scalar *oldsc;
     t_glist *glist;
 
     if(!templatesym->s_name)

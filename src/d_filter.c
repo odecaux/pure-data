@@ -1043,7 +1043,8 @@ static t_int *slop_tilde_perform(t_int *w)
     for(int i = 0; i < num_samples; i++)
     {
         t_sample diff = sigin[i] - last;
-        t_sample inc = freqin[i] * coef, diffinc;
+        t_sample inc = freqin[i] * coef;
+        t_sample diffinc;
         t_sample posinc = posfreqin[i] * coef;
         t_sample neginc = negfreqin[i] * coef;
         t_sample maxdiff = poslimit[i];

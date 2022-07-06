@@ -160,7 +160,8 @@ static void *sigrsqrt_new(void)
 
 static t_int *sigrsqrt_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     while(n--)
     {
@@ -223,7 +224,8 @@ static void *sigsqrt_new(void)
 
 t_int *sigsqrt_perform(t_int *w) /* not static; also used in d_fft.c */
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     while(n--)
     {
@@ -283,7 +285,8 @@ static void *sigwrap_new(void)
 
 static t_int *sigwrap_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     while(n--)
     {
@@ -302,7 +305,8 @@ static t_int *sigwrap_perform(t_int *w)
 /* old buggy version that sometimes output 1 instead of 0 */
 static t_int *sigwrap_old_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     while(n--)
     {
@@ -352,7 +356,8 @@ static void *mtof_tilde_new(void)
 
 static t_int *mtof_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -403,7 +408,8 @@ static void *ftom_tilde_new(void)
 
 static t_int *ftom_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -448,7 +454,8 @@ static void *dbtorms_tilde_new(void)
 
 static t_int *dbtorms_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -499,7 +506,8 @@ static void *rmstodb_tilde_new(void)
 
 static t_int *rmstodb_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -550,7 +558,8 @@ static void *dbtopow_tilde_new(void)
 
 static t_int *dbtopow_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -601,7 +610,8 @@ static void *powtodb_tilde_new(void)
 
 static t_int *powtodb_tilde_perform(t_int *w)
 {
-    t_sample *in = (t_sample *) w[1], *out = (t_sample *) w[2];
+    t_sample *in = (t_sample *) w[1];
+    t_sample *out = (t_sample *) w[2];
     int n = (int) w[3];
     for(; n--; in++, out++)
     {
@@ -659,7 +669,8 @@ t_int *pow_tilde_perform(t_int *w)
     int n = (int) (w[4]);
     while(n--)
     {
-        t_sample f1 = *in1++, f2 = *in2++;
+        t_sample f1 = *in1++;
+        t_sample f2 = *in2++;
         *out++ = (f1 == 0 && f2 < 0) || (f1 < 0 && (f2 - (int) f2) != 0)
                      ? 0
                      : pow(f1, f2);
@@ -751,7 +762,8 @@ t_int *log_tilde_perform(t_int *w)
     int n = (int) (w[4]);
     while(n--)
     {
-        t_sample f = *in1++, g = *in2++;
+        t_sample f = *in1++;
+        t_sample g = *in2++;
         if(f <= 0)
             *out = -1000; /* rather than blow up, output a number << 0 */
         else if(g <= 0)

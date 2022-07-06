@@ -39,7 +39,7 @@
 void pd_init(void);
 int sys_startgui(const char *libdir);
 void sys_stopgui(void);
-int sys_pollgui(void);
+
 
 // (optional) setup functions for built-in "extra" externals
 #ifdef LIBPD_EXTRA

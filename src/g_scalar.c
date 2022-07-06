@@ -167,9 +167,11 @@ t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
 t_binbuf *pointertobinbuf(
     t_pd *x, t_gpointer *gp, t_symbol *s, const char *fname)
 {
-    t_symbol *templatesym = gpointer_gettemplatesym(gp), *arraytype;
+    t_symbol *templatesym = gpointer_gettemplatesym(gp);
+    t_symbol *arraytype;
     t_template *template;
-    int onset, type;
+    int onset;
+    int type;
     t_binbuf *b;
     t_gstub *gs = gp->gp_stub;
     t_word *vec;
@@ -205,7 +207,8 @@ t_binbuf *pointertobinbuf(
 
 void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 {
-    int i, nitems = template->t_n;
+    int i;
+    int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
     for(i = 0; i < nitems; i++, datatypes++, wp++)
     {
@@ -223,7 +226,8 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 
 void word_restore(t_word *wp, t_template *template, int argc, t_atom *argv)
 {
-    int i, nitems = template->t_n;
+    int i;
+    int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
     for(i = 0; i < nitems; i++, datatypes++, wp++)
     {
@@ -271,7 +275,9 @@ void word_free(t_word *wp, t_template *template)
 
 static int template_cancreate(t_template *template)
 {
-    int i, type, nitems = template->t_n;
+    int i;
+    int type;
+    int nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
     t_template *elemtemplate;
     for(i = 0; i < nitems; i++, datatypes++)
@@ -325,7 +331,8 @@ void glist_scalar(t_glist *glist, t_symbol *classname, int argc, t_atom *argv)
     t_symbol *templatesym =
         canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
     t_binbuf *b;
-    int natoms, nextmsg = 0;
+    int natoms;
+    int nextmsg = 0;
     t_atom *vec;
     if(!template_findbyname(templatesym))
     {
@@ -356,9 +363,13 @@ static void scalar_getrect(
     t_scalar *x = (t_scalar *) z;
     t_template *template = template_findbyname(x->sc_template);
     t_canvas *templatecanvas = template_findcanvas(template);
-    int x1 = 0x7fffffff, x2 = -0x7fffffff, y1 = 0x7fffffff, y2 = -0x7fffffff;
+    int x1 = 0x7fffffff;
+    int x2 = -0x7fffffff;
+    int y1 = 0x7fffffff;
+    int y2 = -0x7fffffff;
     t_gobj *y;
-    t_float basex, basey;
+    t_float basex;
+    t_float basey;
     scalar_getbasexy(x, &basex, &basey);
     /* if someone deleted the template canvas, we're just a point */
     if(!templatecanvas)
@@ -373,7 +384,10 @@ static void scalar_getrect(
         for(y = templatecanvas->gl_list; y; y = y->g_next)
         {
             const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
-            int nx1, ny1, nx2, ny2;
+            int nx1;
+            int ny1;
+            int nx2;
+            int ny2;
             if(!wb) continue;
             (*wb->w_parentgetrectfn)(y, owner, x->sc_vec, template, basex,
                 basey, &nx1, &ny1, &nx2, &ny2);
@@ -395,7 +409,10 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
     if(state)
     {
-        int x1, y1, x2, y2;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
 
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--;
@@ -437,7 +454,12 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     t_symbol *zz;
     t_atom at[3];
     t_gpointer gp;
-    int xonset, yonset, xtype, ytype, gotx, goty;
+    int xonset;
+    int yonset;
+    int xtype;
+    int ytype;
+    int gotx;
+    int goty;
     if(!template)
     {
         pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
@@ -478,7 +500,8 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     t_template *template = template_findbyname(x->sc_template);
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_float basex, basey;
+    t_float basex;
+    t_float basey;
     scalar_getbasexy(x, &basex, &basey);
     /* if we don't know how to draw it, make a small rectangle */
     if(!templatecanvas)
@@ -565,8 +588,10 @@ static void scalar_save(t_gobj *z, t_binbuf *b)
 {
     t_scalar *x = (t_scalar *) z;
     t_binbuf *b2 = binbuf_new();
-    t_atom a, *argv;
-    int i, argc;
+    t_atom a;
+    t_atom *argv;
+    int i;
+    int argc;
     canvas_writescalar(x->sc_template, x->sc_vec, b2, 0);
     binbuf_addv(b, "ss", &s__X, gensym("scalar"));
     binbuf_addbinbuf(b, b2);
@@ -577,7 +602,8 @@ static void scalar_save(t_gobj *z, t_binbuf *b)
 static void scalar_properties(t_gobj *z, struct _glist *owner)
 {
     t_scalar *x = (t_scalar *) z;
-    char *buf, buf2[80];
+    char *buf;
+    char buf2[80];
     int bufsize;
     t_binbuf *b;
     glist_noselect(owner);
@@ -607,7 +633,8 @@ static const t_widgetbehavior scalar_widgetbehavior = {
 static void scalar_free(t_scalar *x)
 {
     int i;
-    t_dataslot *datatypes, *dt;
+    t_dataslot *datatypes;
+    t_dataslot *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     sys_unqueuegui(x);

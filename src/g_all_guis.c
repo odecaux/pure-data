@@ -672,7 +672,9 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int bcol = (int) iemgui_getcolorarg(14, argc, argv);
     int fcol = (int) iemgui_getcolorarg(15, argc, argv);
     int lcol = (int) iemgui_getcolorarg(16, argc, argv);
-    int sndable = 1, rcvable = 1, oldsndrcvable = 0;
+    int sndable = 1;
+    int rcvable = 1;
+    int oldsndrcvable = 0;
 
     if(iemgui->x_fsf.x_rcv_able) oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able) oldsndrcvable += IEM_GUI_OLD_SND_FLAG;

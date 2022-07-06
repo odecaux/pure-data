@@ -369,7 +369,7 @@ static void pd_defaultsymbol(t_pd *x, t_symbol *s)
     }
 }
 
-void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv);
+
 static void class_nosavefn(t_gobj *z, t_binbuf *b);
 
 /* handle "list" messages to Pds without explicit list methods defined. */
@@ -1120,11 +1120,17 @@ void pd_typedmess(t_pd *x, t_symbol *name, int argc, t_atom *argv)
             }
 
             t_pd *bonzo;
-            t_int p_0 = ptr_args[0], p_1 = ptr_args[1], p_2 = ptr_args[2],
-                  p_3 = ptr_args[3], p_4 = ptr_args[4], p_5 = ptr_args[5];
-            t_floatarg f_0 = float_args[0], f_1 = float_args[1],
-                       f_2 = float_args[2], f_3 = float_args[3],
-                       f_4 = float_args[4];
+            t_int p_0 = ptr_args[0];
+            t_int p_1 = ptr_args[1];
+            t_int p_2 = ptr_args[2];
+            t_int p_3 = ptr_args[3];
+            t_int p_4 = ptr_args[4];
+            t_int p_5 = ptr_args[5];
+            t_floatarg f_0 = float_args[0];
+            t_floatarg f_1 = float_args[1];
+            t_floatarg f_2 = float_args[2];
+            t_floatarg f_3 = float_args[3];
+            t_floatarg f_4 = float_args[4];
             switch(narg)
             {
                 case 0:

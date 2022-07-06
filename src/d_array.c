@@ -46,7 +46,9 @@ static t_int *tabwrite_tilde_perform(t_int *w)
 {
     t_tabwrite_tilde *x = (t_tabwrite_tilde *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) (w[3]), phase = x->x_phase, endphase = x->x_nsampsintab;
+    int n = (int) (w[3]);
+    int phase = x->x_phase;
+    int endphase = x->x_nsampsintab;
     if(!x->x_vec) goto bad;
 
     if(endphase > phase)
@@ -390,7 +392,8 @@ static t_int *tabread4_tilde_perform(t_int *w)
     t_sample *out = (t_sample *) (w[3]);
     int n = (int) (w[4]);
     int maxindex;
-    t_word *buf = x->x_vec, *wp;
+    t_word *buf = x->x_vec;
+    t_word *wp;
     double onset = x->x_onset;
     int i;
 
@@ -419,7 +422,12 @@ static t_int *tabread4_tilde_perform(t_int *w)
     {
         double findex = *in++ + onset;
         int index = findex;
-        t_sample frac, a, b, c, d, cminusb;
+        t_sample frac;
+        t_sample a;
+        t_sample b;
+        t_sample c;
+        t_sample d;
+        t_sample cminusb;
         if(index < 1)
             index = 1, frac = 0;
         else if(index > maxindex)
@@ -567,7 +575,8 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     t_float fnpoints = x->x_fnpoints;
     int mask = fnpoints - 1;
     t_float conv = fnpoints * x->x_conv;
-    t_word *tab = x->x_vec, *addr;
+    t_word *tab = x->x_vec;
+    t_word *addr;
     double dphase = fnpoints * x->x_phase + UNITBIT32;
 
     if(!tab) goto zero;
@@ -577,7 +586,12 @@ static t_int *tabosc4_tilde_perform(t_int *w)
 #if 1
     while(n--)
     {
-        t_sample frac, a, b, c, d, cminusb;
+        t_sample frac;
+        t_sample a;
+        t_sample b;
+        t_sample c;
+        t_sample d;
+        t_sample cminusb;
         tf.tf_d = dphase;
         dphase += *in++ * conv;
         addr = tab + (tf.tf_i[HIOFFSET] & mask);
@@ -610,7 +624,8 @@ zero:
 static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *name)
 {
     t_garray *a;
-    int npoints, pointsinarray;
+    int npoints;
+    int pointsinarray;
 
     x->x_arrayname = name;
     if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
@@ -921,7 +936,12 @@ static void tabread4_float(t_tabread4 *x, t_float f)
     else
     {
         int n = f;
-        float a, b, c, d, cminusb, frac;
+        float a;
+        float b;
+        float c;
+        float d;
+        float cminusb;
+        float frac;
         t_word *wp;
         if(n >= npoints - 2) n = npoints - 3;
         wp = vec + n;

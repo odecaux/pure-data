@@ -244,7 +244,8 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
 /* convert a binbuf to text; no null termination. */
 void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp)
 {
-    char *buf = getbytes(0), *newbuf;
+    char *buf = getbytes(0);
+    char *newbuf;
     int length = 0;
     char string[MAXPDSTRING];
     const t_atom *ap;
@@ -285,7 +286,8 @@ writing to file doesn't buffer everything together. */
 void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 {
     int previoussize = x->b_n;
-    int newsize = previoussize + argc, i;
+    int newsize = previoussize + argc;
+    int i;
     t_atom *ap;
 
     if(!binbuf_resize(x, newsize))
@@ -307,7 +309,8 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 void binbuf_addv(t_binbuf *x, const char *fmt, ...)
 {
     va_list ap;
-    t_atom arg[MAXADDMESSV], *at = arg;
+    t_atom arg[MAXADDMESSV];
+    t_atom *at = arg;
     int nargs = 0;
     const char *fp = fmt;
 
@@ -354,7 +357,8 @@ escaped.  LATER also figure out about escaping white space */
 void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y)
 {
     t_binbuf *z = binbuf_new();
-    int i, fixit;
+    int i;
+    int fixit;
     t_atom *ap;
     binbuf_add(z, y->b_n, y->b_vec);
     for(i = 0, ap = z->b_vec; i < z->b_n; i++, ap++)
@@ -411,7 +415,8 @@ from binbuf_addbinbuf.  The symbol ";" goes to a semicolon, etc. */
 void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 {
     int previoussize = x->b_n;
-    int newsize = previoussize + argc, i;
+    int newsize = previoussize + argc;
+    int i;
     t_atom *ap;
 
     if(!binbuf_resize(x, newsize))
@@ -424,15 +429,18 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
     {
         if(argv->a_type == A_SYMBOL)
         {
-            const char *str = argv->a_w.w_symbol->s_name, *str2;
+            const char *str = argv->a_w.w_symbol->s_name;
+            const char *str2;
             if(!strcmp(str, ";"))
                 SETSEMI(ap);
             else if(!strcmp(str, ","))
                 SETCOMMA(ap);
             else
             {
-                char buf[MAXPDSTRING], *sp1;
-                const char *sp2, *usestr;
+                char buf[MAXPDSTRING];
+                char *sp1;
+                const char *sp2;
+                const char *usestr;
                 int dollar = 0;
                 if(strchr(str, '\\'))
                 {
@@ -495,7 +503,9 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 
 void binbuf_print(const t_binbuf *x)
 {
-    int i, startedpost = 0, newline = 1;
+    int i;
+    int startedpost = 0;
+    int newline = 1;
     for(i = 0; i < x->b_n; i++)
     {
         if(newline)
@@ -674,10 +684,13 @@ done:
 
 void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 {
-    t_atom smallstack[SMALLMSG], *mstack, *msp;
+    t_atom smallstack[SMALLMSG];
+    t_atom *mstack;
+    t_atom *msp;
     const t_atom *at = x->b_vec;
     int ac = x->b_n;
-    int nargs, maxnargs = 0;
+    int nargs;
+    int maxnargs = 0;
     t_pd *initial_target = target;
 
     if(ac <= SMALLMSG)
@@ -696,7 +709,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             maxnargs = ac;
         else
         {
-            int i, j = (target ? 0 : -1);
+            int i;
+            int j = (target ? 0 : -1);
             for(i = 0; i < ac; i++)
             {
                 if(at[i].a_type == A_SEMI)
@@ -947,7 +961,8 @@ int binbuf_read_via_canvas(
     t_binbuf *b, const char *filename, const t_canvas *canvas, int crflag)
 {
     int filedesc;
-    char buf[MAXPDSTRING], *bufptr;
+    char buf[MAXPDSTRING];
+    char *bufptr;
     if((filedesc = canvas_open(
             canvas, filename, "", buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
@@ -967,7 +982,8 @@ int binbuf_read_via_path(
     t_binbuf *b, const char *filename, const char *dirname, int crflag)
 {
     int filedesc;
-    char buf[MAXPDSTRING], *bufptr;
+    char buf[MAXPDSTRING];
+    char *bufptr;
     if((filedesc = open_via_path(
             dirname, filename, "", buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
@@ -991,7 +1007,10 @@ int binbuf_write(
     const t_binbuf *x, const char *filename, const char *dir, int crflag)
 {
     FILE *f = 0;
-    char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
+    char sbuf[WBUFSIZE];
+    char fbuf[MAXPDSTRING];
+    char *bp = sbuf;
+    char *ep = sbuf + WBUFSIZE;
     t_atom *ap;
     t_binbuf *y = 0;
     const t_binbuf *z = x;
@@ -1074,16 +1093,24 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
 {
     t_binbuf *newb = binbuf_new();
     t_atom *vec = oldb->b_vec;
-    t_int n = oldb->b_n, nextindex, stackdepth = 0, stack[MAXSTACK] = {0},
-          nobj = 0, gotfontsize = 0;
+    t_int n = oldb->b_n;
+    t_int nextindex;
+    t_int stackdepth = 0;
+    t_int stack[MAXSTACK] = {0};
+    t_int nobj = 0;
+    t_int gotfontsize = 0;
     int i;
-    t_atom outmess[MAXSTACK], *nextmess;
+    t_atom outmess[MAXSTACK];
+    t_atom *nextmess;
     t_float fontsize = 10;
     if(!maxtopd) binbuf_addv(newb, "ss;", gensym("max"), gensym("v2"));
     for(nextindex = 0; nextindex < n;)
     {
-        int endmess, natom;
-        const char *first, *second, *third;
+        int endmess;
+        int natom;
+        const char *first;
+        const char *second;
+        const char *third;
         for(endmess = (int) nextindex;
             endmess < n && vec[endmess].a_type != A_SEMI; endmess++)
             ;
@@ -1316,7 +1343,8 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
             {
                 if(!strcmp(second, "canvas"))
                 {
-                    t_float x, y;
+                    t_float x;
+                    t_float y;
                     if(stackdepth >= MAXSTACK)
                     {
                         pd_error(0,
@@ -1538,7 +1566,8 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     else
     {
         /* save bindings of symbols #N, #A (and restore afterward) */
-        t_pd *bounda = gensym("#A")->s_thing, *boundn = s__N.s_thing;
+        t_pd *bounda = gensym("#A")->s_thing;
+        t_pd *boundn = s__N.s_thing;
         gensym("#A")->s_thing = 0;
         s__N.s_thing = &pd_canvasmaker;
         if(import)
@@ -1562,7 +1591,8 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
 /* save a text object to a binbuf for a file or copy buf */
 void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
 {
-    int k, n = binbuf_getnatom(bfrom);
+    int k;
+    int n = binbuf_getnatom(bfrom);
     const t_atom *ap = binbuf_getvec(bfrom);
     t_atom at;
     for(k = 0; k < n; k++)

@@ -364,7 +364,8 @@ t_int *sigsqrt_perform(t_int *w);
 
 static void sigframp_dsp(t_sigframp *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n >> 1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     if(n < 4)
     {
         pd_error(0, "framp: minimum 4 points");

@@ -10,7 +10,7 @@
 
 #include <fftw3.h>
 
-int ilog2(int n);
+
 
 #define MINFFT 0
 #define MAXFFT 30

@@ -112,7 +112,15 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
        graph rectangle, don't draw it. */
     if(has_parent && glist->gl_goprect)
     {
-        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+        int gx1;
+        int gy1;
+        int gx2;
+        int gy2;
+        int m;
         /* for some reason the bounds check on arrays and scalars
            don't seem to apply here.  Perhaps this was in order to allow
            arrays to reach outside their containers?  I no longer understand
@@ -446,8 +454,11 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     t_canvas *x = (t_canvas *) pd_new(canvas_class);
     t_canvas *owner = canvas_getcurrent();
     t_symbol *s = &s_;
-    int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
-    int xloc = GLIST_DEFCANVASXLOC, yloc = GLIST_DEFCANVASYLOC;
+    int vis = 0;
+    int width = GLIST_DEFCANVASWIDTH;
+    int height = GLIST_DEFCANVASHEIGHT;
+    int xloc = GLIST_DEFCANVASXLOC;
+    int yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
@@ -756,10 +767,10 @@ void canvas_drawredrect(t_canvas *x, int doit)
 {
     if(doit)
     {
-        int x1 = x->gl_zoom * x->gl_xmargin,
-            x2 = x1 + x->gl_zoom * x->gl_pixwidth,
-            y1 = x->gl_zoom * x->gl_ymargin,
-            y2 = y1 + x->gl_zoom * x->gl_pixheight;
+        int x1 = x->gl_zoom * x->gl_xmargin;
+        int x2 = x1 + x->gl_zoom * x->gl_pixwidth;
+        int y1 = x->gl_zoom * x->gl_ymargin;
+        int y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
                  "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
@@ -1119,7 +1130,14 @@ void canvas_closebang(t_canvas *x)
 static void canvas_relocate(
     t_canvas *x, t_symbol *canvasgeom, t_symbol *topgeom)
 {
-    int cxpix, cypix, cw, ch, txpix, typix, tw, th;
+    int cxpix;
+    int cypix;
+    int cw;
+    int ch;
+    int txpix;
+    int typix;
+    int tw;
+    int th;
     if(sscanf(canvasgeom->s_name, "%dx%d+%d+%d", &cw, &ch, &cxpix, &cypix) <
             4 ||
         sscanf(topgeom->s_name, "%dx%d+%d+%d", &tw, &th, &txpix, &typix) < 4)
@@ -1909,7 +1927,8 @@ int canvas_path_iterate(
 static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     static int warned;
-    t_gobj *g, *g2;
+    t_gobj *g;
+    t_gobj *g2;
     t_object *ob;
     if(argc > 1 && !warned)
     {
@@ -1946,7 +1965,7 @@ t_glist *pd_checkglist(t_pd *x)
 
 /* why are some of these "glist" and others "canvas"? */
 extern void glist_text(t_glist *x, t_symbol *s, int argc, t_atom *argv);
-extern void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
+
 extern void canvas_bng(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_toggle(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_vslider(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
@@ -1954,7 +1973,7 @@ extern void canvas_hslider(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_vdial(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 /* old version... */
 extern void canvas_hdial(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
-extern void canvas_hdial(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
+
 /* new version: */
 extern void canvas_hradio(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_vradio(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
@@ -2133,7 +2152,8 @@ void pd_doloadbang(void);
 post-evaluation cleanup and loadbang */
 t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
-    t_pd *x = 0, *boundx;
+    t_pd *x = 0;
+    t_pd *boundx;
     int dspstate;
 
     /* even though binbuf_evalfile appears to take care of dspstate,
