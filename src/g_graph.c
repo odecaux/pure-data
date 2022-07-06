@@ -6,12 +6,13 @@
 "graphs" inside another glist.  LATER move the inlet/outlet code of g_canvas.c
 to this file... */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+
 
 /* ---------------------- forward definitions ----------------- */
 

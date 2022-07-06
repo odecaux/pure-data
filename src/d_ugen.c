@@ -11,11 +11,11 @@
     interconnections.
 */
 
-#include "m_imp.h"
-#include "m_pd.h"
-
 #include <stdarg.h>
 #include <stdlib.h>
+
+#include "m_pd.h"
+#include "m_imp.h"
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
 

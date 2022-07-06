@@ -2,13 +2,13 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <math.h>
 #include <stdio.h> /* for read/write to files */
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
 
 /* jsarlo { */
 #define ARRAYPAGESIZE 1000 /* this should match the page size in u_main.tk */

@@ -1,8 +1,9 @@
-#include "g_canvas.h"
-#include "m_imp.h"
-#include "m_pd.h"
-
 #include <string.h>
+
+#include "m_pd.h"
+#include "m_imp.h"
+
+#include "g_canvas.h"
 
 /* ---------- clone - maintain copies of a patch ----------------- */
 

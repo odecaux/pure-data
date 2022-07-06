@@ -5,9 +5,9 @@
 /* Pd side of the Pd/Pd-gui interface.  Also, some system interface routines
 that didn't really belong anywhere. */
 
-#include "g_canvas.h" /* for GUI queueing stuff */
-#include "m_imp.h"
 #include "m_pd.h"
+#include "m_imp.h"
+#include "g_canvas.h" /* for GUI queueing stuff */
 #include "s_net.h"
 #include "s_stuff.h"
 

@@ -5,18 +5,18 @@
 /* this file defines the "glist" class, also known as "canvas" (the two used
 to be different but are now unified except for some fossilized names.) */
 
-#include "g_canvas.h"
-
-#include "g_all_guis.h"
-#include "g_undo.h"
-#include "m_imp.h"
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#include "m_pd.h"
+#include "m_imp.h"
+#include "g_canvas.h"
+#include "g_all_guis.h"
+#include "g_undo.h"
+#include "s_stuff.h"
+#include "s_utf8.h"
 
 #ifdef _WIN32
 #include <io.h>

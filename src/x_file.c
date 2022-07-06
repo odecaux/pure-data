@@ -5,8 +5,8 @@
 /* The "file" object. */
 #define _XOPEN_SOURCE 600
 
-#include "g_canvas.h"
 #include "m_pd.h"
+#include "g_canvas.h"
 #include "s_utf8.h"
 
 #include <errno.h>

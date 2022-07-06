@@ -13,9 +13,6 @@
     - up to 4 cards with has to be hardwaresynced
    (winfried)
 */
-#include "m_pd.h"
-#include "s_audio_alsa.h"
-#include "s_stuff.h"
 
 #include <alsa/asoundlib.h>
 #include <errno.h>
@@ -29,6 +26,10 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "m_pd.h"
+#include "s_audio_alsa.h"
+#include "s_stuff.h"
 
 /* needed for alsa 0.9 compatibility: */
 #if(SND_LIB_MAJOR < 1)

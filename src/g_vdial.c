@@ -7,15 +7,15 @@
 /* name change to vradio by MSP (it's a radio button really) and changed to
 put out a "float" as in sliders, toggles, etc. */
 
-#include "g_all_guis.h"
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+#include "g_all_guis.h"
 
 /* ------------- vdl     gui-vertical radio button ---------------------- */
 

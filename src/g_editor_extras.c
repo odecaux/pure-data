@@ -2,10 +2,10 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
+#include "m_pd.h"
+#include "m_imp.h"
 #include "g_canvas.h"
 #include "g_undo.h"
-#include "m_imp.h"
-#include "m_pd.h"
 
 void *canvas_undo_set_pastebinbuf(
     t_canvas *x, t_binbuf *b, int numpasted, int duplicate, int d_offset);

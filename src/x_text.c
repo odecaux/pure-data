@@ -5,8 +5,8 @@
 /* historically this file defined the qlist and textfile objects - at the
 moment it also defines "text" but it may later be better to split this off. */
 
-#include "g_canvas.h" /* just for glist_getfont, bother */
 #include "m_pd.h"
+#include "g_canvas.h" /* just for glist_getfont, bother */
 
 #include <stdio.h>
 #include <string.h>

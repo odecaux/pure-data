@@ -16,12 +16,12 @@ sublist - get a pointer into a list which is an element of another scalar
 
 */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <stdio.h> /* for read/write to files */
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
 
 /* templates are named using the name-bashing by which canvases bind
 thenselves, with a leading "pd-".  LATER see if we can have templates

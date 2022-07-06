@@ -8,11 +8,6 @@
 /* support for ALSA pcmv2 api by Karl MacMillan<karlmac@peabody.jhu.edu> */
 /* support for ALSA MMAP noninterleaved by Winfried Ritsch, IEM */
 
-#include "s_audio_alsa.h"
-
-#include "m_pd.h"
-#include "s_stuff.h"
-
 #include <alsa/asoundlib.h>
 #include <endian.h>
 #include <errno.h>
@@ -27,6 +22,10 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "m_pd.h"
+#include "s_audio_alsa.h"
+#include "s_stuff.h"
 
 /* Defines */
 #define DEBUG(x) x

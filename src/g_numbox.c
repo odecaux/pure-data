@@ -4,15 +4,15 @@
 
 /* my_numbox.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
-#include "g_all_guis.h"
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+#include "g_all_guis.h"
 
 #ifdef _WIN32
 #include <io.h>

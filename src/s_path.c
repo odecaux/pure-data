@@ -31,8 +31,8 @@
 #include <stdlib.h> /* BSDs for example */
 #endif
 
-#include "m_imp.h"
 #include "m_pd.h"
+#include "m_imp.h"
 #include "s_stuff.h"
 #include "s_utf8.h"
 

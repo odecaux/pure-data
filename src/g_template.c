@@ -2,12 +2,12 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
 
 /*
 This file contains text objects you would put in a canvas to define a

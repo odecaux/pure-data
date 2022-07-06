@@ -6,8 +6,8 @@
 can interconnect via inlets and outlets; also, the (terse) generic
 behavior for "gobjs" appears at the end of this file.  */
 
-#include "m_imp.h"
 #include "m_pd.h"
+#include "m_imp.h"
 
 #include <string.h>
 

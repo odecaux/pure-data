@@ -4,9 +4,9 @@
 
 /* misc. */
 
-#include "g_canvas.h"
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "g_canvas.h"
 
 #include <math.h>
 #include <stdio.h>

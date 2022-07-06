@@ -12,10 +12,11 @@ sends it on to the outlet proper.  Another way to do it would be to have
 separate classes for "signal" and "control" outlets, but this would complicate
 life elsewhere. */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+
 void signal_setborrowed(t_signal *sig, t_signal *sig2);
 void signal_makereusable(t_signal *sig);
 

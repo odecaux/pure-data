@@ -11,13 +11,13 @@ Alternatively, the  glist_read() and glist_write() routines read and write
 file format as in the dialog window for data.
 */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
 
 /* object to assist in saving state by abstractions */
 static t_class *savestate_class;

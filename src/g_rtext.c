@@ -2,15 +2,15 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include "g_canvas.h"
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+#include "s_stuff.h"
+#include "s_utf8.h"
 
 #define LMARGIN 2
 #define RMARGIN 2

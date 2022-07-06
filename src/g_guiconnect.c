@@ -9,8 +9,8 @@ See also the gfxstub object that doesn't oblige the owner to keep a pointer
 around (so is better suited to one-off dialogs)
 */
 
-#include "g_canvas.h"
 #include "m_pd.h"
+#include "g_canvas.h"
 
 struct _guiconnect
 {

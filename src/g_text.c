@@ -6,17 +6,18 @@
 /* the methods for calling the gui-objects from menu are implemented */
 /* all changes are labeled with      iemlib      */
 
-#include "g_canvas.h"
-#include "g_undo.h"
-#include "m_imp.h"
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h"
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "m_imp.h"
+
+#include "g_canvas.h"
+#include "g_undo.h"
+#include "s_stuff.h"
+#include "s_utf8.h"
 
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */
 #define ATOM_RMARGIN 2 /* 2 pixels smaller than object LMARGIN + RMARGIN */

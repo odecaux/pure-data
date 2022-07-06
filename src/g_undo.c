@@ -1,9 +1,9 @@
+#include <stdio.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
 #include "g_undo.h"
 
-#include "g_canvas.h"
-#include "m_pd.h"
-
-#include <stdio.h>
 
 #if 0
 #define DEBUG_UNDO(x) startpost("[%s:%d] ", __FILE__, __LINE__), x

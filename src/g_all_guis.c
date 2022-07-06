@@ -4,18 +4,17 @@
 
 /* g_7_guis.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
-
-#include "g_all_guis.h"
-
-#include "g_canvas.h"
-#include "m_pd.h"
-#include "s_stuff.h"
-
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "g_canvas.h"
+#include "s_stuff.h"
+
+#include "g_all_guis.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf

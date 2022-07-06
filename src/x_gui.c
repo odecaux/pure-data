@@ -5,8 +5,8 @@
 /* dialogs.  LATER, deal with the situation where the object goes
 away before the panel does... */
 
-#include "g_canvas.h"
 #include "m_pd.h"
+#include "g_canvas.h"
 
 #include <stdio.h>
 #include <string.h>

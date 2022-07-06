@@ -4,8 +4,8 @@
 
 /* Clock functions (which should move, but where?) and MIDI queueing */
 
-#include "m_imp.h"
 #include "m_pd.h"
+#include "m_imp.h"
 #include "s_stuff.h"
 #ifdef HAVE_UNISTD_H
 #include <sys/time.h>

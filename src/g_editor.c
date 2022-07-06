@@ -2,16 +2,18 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include "g_canvas.h"
-#include "g_undo.h"
-#include "m_imp.h"
-#include "m_pd.h"
-#include "s_stuff.h"
-#include "s_utf8.h" /*-- moo --*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "m_pd.h"
+#include "m_imp.h"
+
+#include "g_canvas.h"
+#include "g_undo.h"
+#include "s_stuff.h"
+#include "s_utf8.h" /*-- moo --*/
+
 #ifdef _MSC_VER /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
 #endif
