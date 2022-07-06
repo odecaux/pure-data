@@ -302,13 +302,12 @@ static t_int *tabread_tilde_perform(t_int *w)
     int n = (int) (w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
-    int i;
 
     maxindex = x->x_npoints - 1;
     if(maxindex < 0) goto zero;
     if(!buf) goto zero;
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         int index = *in++;
         if(index < 0)
@@ -407,7 +406,6 @@ static t_int *tabread4_tilde_perform(t_int *w)
     t_word *buf = x->x_vec;
     t_word *wp;
     double onset = x->x_onset;
-    int i;
 
     maxindex = x->x_npoints - 3;
     if(maxindex < 0) goto zero;
@@ -415,14 +413,14 @@ static t_int *tabread4_tilde_perform(t_int *w)
     if(!buf) goto zero;
 
 #if 0 /* test for spam -- I'm not ready to deal with this */
-    for (i = 0,  xmax = 0, xmin = maxindex,  fp = in1; i < n; i++,  fp++)
+    for (int i = 0,  xmax = 0, xmin = maxindex,  fp = in1; i < n; i++,  fp++)
     {
         t_sample f = *in1;
         if (f < xmin) xmin = f;
         else if (f > xmax) xmax = f;
     }
     if (xmax < xmin + x->c_maxextent) xmax = xmin + x->c_maxextent;
-    for (i = 0, splitlo = xmin+ x->c_maxextent, splithi = xmax - x->c_maxextent,
+    for (int i = 0, splitlo = xmin+ x->c_maxextent, splithi = xmax - x->c_maxextent,
         fp = in1; i < n; i++,  fp++)
     {
         t_sample f = *in1;
@@ -430,7 +428,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
     }
 #endif
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         double findex = *in++ + onset;
         int index = findex;

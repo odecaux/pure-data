@@ -320,14 +320,10 @@ void sys_close_audio(void)
 #endif
 #ifdef USEAPI_DUMMY
         if(sys_audioapiopened == API_DUMMY)
-    {
         dummy_close_audio();
-    }
     else
-    {
 #endif
         post("sys_close_audio: unknown API %d", sys_audioapiopened);
-    }
 
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
@@ -507,14 +503,10 @@ int sys_send_dacs(void)
 #endif
 #ifdef USEAPI_DUMMY
         if(sys_audioapiopened == API_DUMMY)
-    {
         return (dummy_send_dacs());
-    }
     else
-    {
 #endif
         post("unknown API");
-    }
 
     return (0);
 }
